@@ -7,10 +7,22 @@
 //
 
 #import "FlipsideViewController.h"
+#import "Proximus.h"
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate> {
+	Proximus *proximus;
+	IBOutlet UILabel *mbUsed;
+	IBOutlet UILabel *mbToUse;
+	IBOutlet UIProgressView *progressView;
 }
 
+@property(nonatomic,retain)Proximus *proximus;
+@property(nonatomic,retain)UILabel *mbUsed;
+@property(nonatomic,retain)UILabel *mbToUse;
+@property(nonatomic,retain)UIProgressView *progressView;
+
 - (IBAction)showInfo:(id)sender;
+
+-(void)displayRecentData;
 
 @end

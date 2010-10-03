@@ -4,3 +4,6 @@
 [submodule "githubs/hpple"]
 	path = githubs/hpple
 	url = git://github.com/topfunky/hpple.git
+[submodule "githubs/TouchSQL"]
+	path = githubs/TouchSQL
+	url = git://github.com/schwa/TouchSQL.git

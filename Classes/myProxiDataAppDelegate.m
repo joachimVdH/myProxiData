@@ -14,7 +14,24 @@
 
 @synthesize window;
 @synthesize mainViewController;
+@synthesize db;
 
+#pragma mark -
+#pragma mark Memory management
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+    /*
+     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
+     */
+}
+
+
+- (void)dealloc {
+	[db release];
+    [mainViewController release];
+    [window release];
+    [super dealloc];
+}
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -22,7 +39,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.  
-
+	[self databaseInit];
     // Add the main view controller's view to the window and display.
     [window addSubview:mainViewController.view];
     [window makeKeyAndVisible];
@@ -69,20 +86,45 @@
 }
 
 
+
 #pragma mark -
-#pragma mark Memory management
+#pragma mark database management
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
-     Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
-     */
+-(void)databaseInit{
+	
+	BOOL result;
+	
+	//Where do documents go
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *path =[paths objectAtIndex:0];
+	
+	//What would be the name of my database file
+	NSString *fullPath = [path stringByAppendingPathComponent:@"myProxyData.db"];
+	
+	//Get a file manager for file operations
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	//Does the file already exist?
+	BOOL exists = [fm fileExistsAtPath:fullPath];
+	
+	if(exists){
+		NSLog(@"%@ exists", fullPath);
+		db = [[CSqliteDatabase alloc] initWithPath:fullPath];
+		// init the db
+		result = [db open:nil];
+		NSLog(@"db open : %d",result);
+	} else {
+		NSLog(@"%@ does not exist - creating one",fullPath);
+		db = [[CSqliteDatabase alloc] initWithPath:fullPath];
+		// init the db
+		result = [db open:nil];
+		NSLog(@"db open : %d",result);
+		
+		NSString *expression = @"CREATE  TABLE logs (used NUMERIC NOT NULL , volume NUMERIC NOT NULL , timestamp DATETIME DEFAULT CURRENT_TIMESTAMP);";
+		result = [db executeExpression:expression error:NULL];
+		NSLog(@"db table created : %d",result);
+	}
 }
 
-
-- (void)dealloc {
-    [mainViewController release];
-    [window release];
-    [super dealloc];
-}
 
 @end

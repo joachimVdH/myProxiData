@@ -13,7 +13,14 @@
 
 @interface FlipsideViewController : UIViewController {
 	id <FlipsideViewControllerDelegate> delegate;
+	IBOutlet UITextField *mobileNumber;
+	IBOutlet UITextField *password;
 }
+
+@property (nonatomic,retain) UITextField *mobileNumber;
+@property (nonatomic,retain) UITextField *password;
+
+- (IBAction)textFieldDoneEditing:(id)sender;
 
 @property (nonatomic, assign) id <FlipsideViewControllerDelegate> delegate;
 - (IBAction)done:(id)sender;

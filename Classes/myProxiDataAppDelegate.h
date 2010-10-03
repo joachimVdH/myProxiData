@@ -7,16 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "CSqliteDatabase.h"
 @class MainViewController;
 
 @interface myProxiDataAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
     MainViewController *mainViewController;
+	CSqliteDatabase *db;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
+@property (nonatomic, retain) CSqliteDatabase *db;
 
+-(void)databaseInit;
 @end
 
