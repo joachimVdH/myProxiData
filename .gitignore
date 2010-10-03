@@ -5,3 +5,5 @@
 build/
 # Ignore Finder spam.
 \.DS_Store
+githubs/asi-http-request
+githubs/hpple
