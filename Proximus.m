@@ -14,8 +14,10 @@
 
 @implementation Proximus
 
+@synthesize delegate;
 
 - (void)dealloc {
+	[delegate release];
     [super dealloc];
 }
 
@@ -72,12 +74,12 @@
 
 - (void)loginError:(ASIHTTPRequest *)request
 {
-	NSError *error = [request error];
+	//NSError *error = [request error];
 	//NSLog(@"loginError : %@",error);
 	
 	UIAlertView *errorAlert = [[UIAlertView alloc]
 							  initWithTitle:@"connection error"
-							  message:[NSString stringWithFormat:@"%@",[error description]]
+							  message:[NSString stringWithFormat:@"%@",@"No internet connection available"]
 							  delegate:nil
 							  cancelButtonTitle:@"ok"
 							  otherButtonTitles:nil];
@@ -132,6 +134,8 @@
 		result = [appDelegate.db executeExpression:expression error:NULL];
 		NSLog(@"dbresult %d", result);
 		//[appDelegate release];
+		
+		[[self delegate] proximusDidAddData];
 		
 	} else {
 		NSLog(@"%@",@"no three elements for data");

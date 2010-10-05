@@ -10,11 +10,20 @@
 #import <UIKit/UIKit.h>
 
 
-@interface Proximus : NSObject {
+@protocol ProximusDelegate<NSObject>
+@optional
+- (void)proximusDidAddData;
+@end
 
+@interface Proximus : NSObject {
+	id<ProximusDelegate> delegate;
 }
+
+@property (nonatomic,assign) id<ProximusDelegate> delegate;
+
 - (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password;
 - (void)grabURLInBackground;
 - (void)parseData:(NSData *)html;
 
 @end
+

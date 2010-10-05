@@ -9,7 +9,7 @@
 #import "FlipsideViewController.h"
 #import "Proximus.h"
 
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate> {
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate,ProximusDelegate> {
 	Proximus *proximus;
 	IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;

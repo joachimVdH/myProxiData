@@ -41,7 +41,7 @@
 	
 	
 	if (nil != mobileNumber.text && nil != mobileNumber.text ){
-		Proximus *proximus = [[Proximus alloc] init] ;
+		Proximus *proximus = [[[Proximus alloc] init] autorelease] ;
 		[proximus setCredentials:mobileNumber.text yourPassword:password.text];
 	}
 	

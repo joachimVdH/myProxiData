@@ -29,6 +29,7 @@
 	[super viewDidLoad];
 
 	proximus = [[Proximus alloc] init] ;
+	[proximus setDelegate:self]; 
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
 	NSString *loginMobileNumber = [prefs stringForKey:@"loginMobileNumber"];
@@ -124,6 +125,9 @@
 */
 
 
+- (void)proximusDidAddData{
+	[self displayRecentData];
+}
 
 
 @end
