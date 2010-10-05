@@ -7,3 +7,6 @@
 [submodule "githubs/TouchSQL"]
 	path = githubs/TouchSQL
 	url = git://github.com/schwa/TouchSQL.git
+[submodule "githubs/core-plot"]
+	path = githubs/core-plot
+	url = git://github.com/djw/core-plot.git
