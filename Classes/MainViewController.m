@@ -26,6 +26,7 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+	NSLog(@"%@", @"viewDidLoad start");
 	[super viewDidLoad];
 
 	proximus = [[Proximus alloc] init] ;
@@ -55,18 +56,19 @@
 	}
 	
 	[self displayRecentData];
+	NSLog(@"%@", @"viewDidLoad end");
 }
 
 
 -(void)displayRecentData{
-	
+	NSLog(@"%@", @"displayRecentData start");
 	int used ;
 	int volume ;
 	
 	myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
 	
 	NSError *err = NULL;
-	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY timestamp desc" error:&err];
+	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY periodTo desc" error:&err];
 	NSLog(@"%@", err);
 	//NSLog(@"%@", rows);
 	
@@ -78,10 +80,15 @@
 		volume = [[row objectForKey:@"volume"] intValue];
 		
 		mbUsed.text = [NSString stringWithFormat:@"%d", used];
-		mbToUse.text = [NSString stringWithFormat:@"%d", volume-used ] ;
-		
-		progressView.progress = (float) used/volume;
+		if (used > volume) {
+			mbToUse.text = @"0" ;
+			progressView.progress = 1;
+		} else {
+			mbToUse.text = [NSString stringWithFormat:@"%d", volume-used ] ;
+			progressView.progress = (float) used/volume;
+		}
 	}
+	NSLog(@"%@", @"displayRecentData end");
 }
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
@@ -106,6 +113,7 @@
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 	
+	NSLog(@"%@", @"didReceiveMemoryWarning");
 	// Release any cached data, images, etc. that aren't in use.
 }
 
@@ -126,7 +134,9 @@
 
 
 - (void)proximusDidAddData{
+	NSLog(@"%@", @"proximusDidAddData start");
 	[self displayRecentData];
+	NSLog(@"%@", @"proximusDidAddData end");
 }
 
 

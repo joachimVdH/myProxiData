@@ -23,6 +23,7 @@
 
 - (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password
 {
+	NSLog(@"setCredentials start") ;
 	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/LOG/login"];
 	ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
 	[request setDelegate:self];
@@ -37,20 +38,24 @@
 	[request setDidFinishSelector:@selector(loginDone:)];
 	[request setDidFailSelector:@selector(loginError:)];
 	[request startAsynchronous];
+	NSLog(@"setCredentials end") ;
 }
 
 - (void)grabURLInBackground
 {
+	NSLog(@"grabURLInBackground start") ;
 	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl"];
 	ASIFormDataRequest *request = [ASIHTTPRequest requestWithURL:url];
 	[request setDelegate:self];
 	[request setDidFinishSelector:@selector(getDataDone:)];
 	[request setDidFailSelector:@selector(getDataError:)];
 	[request startAsynchronous];
+	NSLog(@"grabURLInBackground end") ;
 }
 
 - (void)loginDone:(ASIHTTPRequest *)request
 {
+	NSLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
 	//NSLog(@"loginDone : %@",responsedata);
 	if ([responsedata length] == 159) {
@@ -70,6 +75,7 @@
 		[errorAlert show];
 		[errorAlert release];
 	}	
+	NSLog(@"loginDone end") ;
 }
 
 - (void)loginError:(ASIHTTPRequest *)request
@@ -91,9 +97,11 @@
 
 - (void)getDataDone:(ASIHTTPRequest *)request
 {
+	NSLog(@"getDataDone start") ;
 	NSData *responsedata = [request responseData];	
 	//NSLog(@"getDataDone : %@",responsedata);
 	[self parseData:responsedata];
+	NSLog(@"getDataDone end");
 }
 
 - (void)getDataError:(ASIHTTPRequest *)request
@@ -114,6 +122,8 @@
 		NSString *expression;
 		NSString *used = nil;
 		NSString *volume = nil;
+		NSString *periodFrom = nil;
+		NSString *periodTo = nil;
 		int counter;
 		counter = 1;
 		
@@ -127,7 +137,25 @@
 			}
 			counter++;
 		}
-		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume) VALUES (%@,%@)", used ,volume,nil];
+		
+		//[elements release],elements = nil;
+		elements = [xpathParser search:@"//div[@class='articleBody']//p//span[@class='date']"];
+		
+		//NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
+		//[dateFormat setDateFormat:@"dd/MM/yyyy - HHmm"];
+		
+		counter = 1;
+		for (TFHppleElement *element in elements) {
+			NSLog(@"element: %@", [element content]);
+			if(1 == counter){
+				periodFrom = [element content];
+			}else {
+				periodTo = [element content];
+			}
+			counter++;
+		}
+		
+		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo) VALUES (%@,%@,'%@','%@')", used ,volume, periodFrom,periodTo, nil];
 		NSLog(@"sql expression : %@",expression);
 		myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
 		
@@ -136,6 +164,9 @@
 		//[appDelegate release];
 		
 		[[self delegate] proximusDidAddData];
+		
+		//[elements release],elements = nil;
+		//[dateFormat release],dateFormat = nil;
 		
 	} else {
 		NSLog(@"%@",@"no three elements for data");
