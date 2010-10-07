@@ -50,10 +50,7 @@
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<object class="NSColor" key="IBUITintColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4yNDcwNTg4MjM3IDAuMTQ5MDE5NjEzOSAwLjUwOTgwMzk1MDgAA</bytes>
-						</object>
+						<int key="IBUIBarStyle">1</int>
 						<object class="NSArray" key="IBUIItems">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBUINavigationItem" id="553200710">
@@ -88,6 +85,11 @@
 								<int key="NSID">2</int>
 							</object>
 						</object>
+						<object class="NSFont" key="IBUIFont" id="979104337">
+							<string key="NSName">Helvetica</string>
+							<double key="NSSize">18</double>
+							<int key="NSfFlags">16</int>
+						</object>
 						<int key="IBUITextAlignment">1</int>
 						<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 						<float key="IBUIMinimumFontSize">17</float>
@@ -115,6 +117,7 @@
 							<bytes key="NSWhite">MAA</bytes>
 							<reference key="NSCustomColorSpace" ref="870618880"/>
 						</object>
+						<reference key="IBUIFont" ref="979104337"/>
 						<int key="IBUITextAlignment">1</int>
 						<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 						<float key="IBUIMinimumFontSize">17</float>
@@ -131,7 +134,7 @@
 				<reference key="NSSuperview"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
-					<bytes key="NSRGB">MC4yNDcwNTg4MjM3IDAuMTQ5MDE5NjEzOSAwLjUwOTgwMzk1MDgAA</bytes>
+					<bytes key="NSRGB">MCAwIDAAA</bytes>
 				</object>
 				<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics">
