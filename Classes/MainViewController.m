@@ -76,7 +76,7 @@
 		NSDictionary *row = [rows objectAtIndex:0];
 		//NSLog(@"%@", row);	
 		
-		used = [[row objectForKey:@"used"] intValue];
+		used = [[row objectForKey:@"used"] intValue] + 1;
 		volume = [[row objectForKey:@"volume"] intValue];
 		
 		mbUsed.text = [NSString stringWithFormat:@"%d", used];
