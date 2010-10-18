@@ -10,3 +10,6 @@
 [submodule "githubs/core-plot"]
 	path = githubs/core-plot
 	url = git://github.com/djw/core-plot.git
+[submodule "githubs/gh-unit"]
+	path = githubs/gh-unit
+	url = git://github.com/gabriel/gh-unit.git
