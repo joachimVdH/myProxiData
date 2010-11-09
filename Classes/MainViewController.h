@@ -14,11 +14,13 @@
 	IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;
 	IBOutlet UIProgressView *progressView;
+	IBOutlet UILabel *status;
 }
 
 @property(nonatomic,retain)Proximus *proximus;
 @property(nonatomic,retain)UILabel *mbUsed;
 @property(nonatomic,retain)UILabel *mbToUse;
+@property(nonatomic,retain)UILabel *status;
 @property(nonatomic,retain)UIProgressView *progressView;
 
 - (IBAction)showInfo:(id)sender;

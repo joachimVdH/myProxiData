@@ -15,12 +15,14 @@
 @synthesize mbUsed;
 @synthesize mbToUse;
 @synthesize progressView;
+@synthesize status;
 
 - (void)dealloc {
 	[mbUsed release];
 	[mbToUse release];
 	[progressView release];
 	[proximus release];
+	[status release];
     [super dealloc];
 }
 
@@ -68,7 +70,7 @@
 	myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
 	
 	NSError *err = NULL;
-	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY periodTo desc" error:&err];
+	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY createdAt desc" error:&err];
 	NSLog(@"%@", err);
 	//NSLog(@"%@", rows);
 	
@@ -78,6 +80,8 @@
 		
 		used = [[row objectForKey:@"used"] intValue] + 1;
 		volume = [[row objectForKey:@"volume"] intValue];
+		
+		status.text = [NSString stringWithFormat:@"data from %@", [row objectForKey:@"createdAt"]];
 		
 		mbUsed.text = [NSString stringWithFormat:@"%d", used];
 		if (used > volume) {

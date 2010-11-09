@@ -24,6 +24,7 @@
 - (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password;
 - (void)grabURLInBackground;
 - (void)parseData:(NSData *)html;
+//- (float)getUsedData:(NSData *)html;
 
 @end
 

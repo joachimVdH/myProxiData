@@ -120,7 +120,7 @@
 		result = [db open:nil];
 		NSLog(@"db open : %d",result);
 		
-		NSString *expression = @"CREATE  TABLE logs (used NUMERIC, volume NUMERIC, periodFrom DATETIME, periodTo DATETIME);";
+		NSString *expression = @"CREATE  TABLE logs (used NUMERIC, volume NUMERIC, periodFrom DATETIME, periodTo DATETIME, createdAt DATETIME DEFAULT CURRENT_TIMESTAMP);";
 		result = [db executeExpression:expression error:NULL];
 		NSLog(@"db table created : %d",result);
 	}
