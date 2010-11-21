@@ -54,7 +54,7 @@
 		
 		[noCredentials show];
 		[noCredentials release];
-				
+		[self flipSide];		
 	}
 	
 	[self displayRecentData];
@@ -81,7 +81,21 @@
 		used = [[row objectForKey:@"used"] intValue] + 1;
 		volume = [[row objectForKey:@"volume"] intValue];
 		
-		status.text = [NSString stringWithFormat:@"data from %@", [row objectForKey:@"createdAt"]];
+		// formatting data start
+		NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
+		// http://unicode.org/reports/tr35/tr35-4.html#Date_Format_Patterns
+		[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
+		//NSLog(@"Raw Date : %@",[row objectForKey:@"createdAt"]);
+		NSDate *formatterDate = [inputFormatter dateFromString:[row objectForKey:@"createdAt"]];
+		
+		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
+		[outputFormatter setDateFormat:@"'Last refresh at' HH:mm 'on' EEE d MMM"];
+
+		status.text = [outputFormatter stringFromDate:formatterDate];
+		// formatting data end
+		
+		[inputFormatter release];
+		[outputFormatter release];
 		
 		mbUsed.text = [NSString stringWithFormat:@"%d", used];
 		if (used > volume) {
@@ -97,11 +111,20 @@
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
     
+	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	
+	NSString *loginMobileNumber = [prefs stringForKey:@"loginMobileNumber"];
+	NSString *loginPassword = [prefs stringForKey:@"loginPassword"];
+	
+	if (nil != loginMobileNumber && nil != loginPassword ){
+		[proximus setCredentials:loginMobileNumber yourPassword:loginPassword];
+	}
+	
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 
-- (IBAction)showInfo:(id)sender {    
+- (void)flipSide {
 	
 	FlipsideViewController *controller = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
 	controller.delegate = self;
@@ -110,6 +133,10 @@
 	[self presentModalViewController:controller animated:YES];
 	
 	[controller release];
+}
+
+- (IBAction)showInfo:(id)sender {    
+	[self flipSide];
 }
 
 

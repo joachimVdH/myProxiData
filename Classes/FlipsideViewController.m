@@ -25,7 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	mobileNumber.text = [prefs stringForKey:@"loginMobileNumber"];
 	password.text = [prefs stringForKey:@"loginPassword"];
@@ -33,19 +32,11 @@
 
 
 - (IBAction)done:(id)sender {
-	[self.delegate flipsideViewControllerDidFinish:self];
-	
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[prefs setObject:mobileNumber.text forKey:@"loginMobileNumber"];
 	[prefs setObject:password.text forKey:@"loginPassword"];	
 	
-	/*
-	if (nil != mobileNumber.text && nil != mobileNumber.text ){
-		Proximus *proximus = [[[Proximus alloc] init] autorelease] ;
-		[proximus setCredentials:mobileNumber.text yourPassword:password.text];
-	}
-	 */
-	
+	[self.delegate flipsideViewControllerDidFinish:self];	
 }
 
 - (IBAction)textFieldDoneEditing:(id)sender{ 

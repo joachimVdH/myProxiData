@@ -57,8 +57,8 @@
 {
 	NSLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
-	//NSLog(@"loginDone : %@",responsedata);
-	if ([responsedata length] == 159) {
+	NSLog(@"loginDone : %@",responsedata);
+	if ([responsedata length] == 157) {
 		NSLog(@"lenght ok : %d",[responsedata length]);
 		
 		[self grabURLInBackground];
@@ -155,7 +155,7 @@
 			counter++;
 		}
 		
-		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo) VALUES (%@,%@,'%@','%@')", used ,volume, periodFrom,periodTo, nil];
+		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo,createdAt) VALUES (%@,%@,'%@','%@','%@')", used ,volume, periodFrom,periodTo,[NSDate date] ,nil];
 		NSLog(@"sql expression : %@",expression);
 		myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
 		

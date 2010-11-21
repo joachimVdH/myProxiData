@@ -25,6 +25,7 @@
 
 - (IBAction)showInfo:(id)sender;
 
--(void)displayRecentData;
+- (void)displayRecentData;
+- (void)flipSide;
 
 @end
