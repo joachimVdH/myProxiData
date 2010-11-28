@@ -57,17 +57,15 @@
 {
 	NSLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
-	NSLog(@"loginDone : %@",responsedata);
-	if ([responsedata length] == 157) {
-		NSLog(@"lenght ok : %d",[responsedata length]);
-		
+	//NSLog(@"loginDone : %@",responsedata);
+	if ([responsedata length] <= 160) {
+		//NSLog(@"lenght ok : %d",[responsedata length]);
 		[self grabURLInBackground];
 	} else {
 		NSLog(@"lenght not ok : %d",[responsedata length]);
-		
 		UIAlertView *errorAlert = [[UIAlertView alloc]
-								   initWithTitle:@"no success"
-								   message:[NSString stringWithFormat:@"%@",@"Mobile number or password are not correct"]
+								   initWithTitle:NSLocalizedString(@"no success",@"no success alert title")
+								   message:NSLocalizedString(@"Mobile number or password are not correct",@"Mobile number or password are not correct")
 								   delegate:nil
 								   cancelButtonTitle:@"ok"
 								   otherButtonTitles:nil];
@@ -84,8 +82,8 @@
 	//NSLog(@"loginError : %@",error);
 	
 	UIAlertView *errorAlert = [[UIAlertView alloc]
-							  initWithTitle:@"connection error"
-							  message:[NSString stringWithFormat:@"%@",@"No internet connection available"]
+							  initWithTitle:NSLocalizedString(@"connection error",@"connection error alert title")
+							  message:NSLocalizedString(@"No internet connection available",@"No internet connection available")
 							  delegate:nil
 							  cancelButtonTitle:@"ok"
 							  otherButtonTitles:nil];
@@ -120,20 +118,34 @@
 		
 		BOOL result;
 		NSString *expression;
-		NSString *used = nil;
-		NSString *volume = nil;
+		float used = 0.0;
+		float volume = 0.0;
 		NSString *periodFrom = nil;
 		NSString *periodTo = nil;
 		int counter;
 		counter = 1;
 		
+		NSRange textRange;
+		
 		// assume when 3 you've got the data (less are remarks or not available ?)
 		for (TFHppleElement *element in elements) {
 			NSLog(@"element: %@", [element content]);
 			if(1 == counter){
-				used = [[element content] stringByReplacingOccurrencesOfString:@" MB" withString:@""];
+				textRange =[[element content] rangeOfString:@"GB"];
+				if(textRange.location != NSNotFound)
+				{
+					used = [[[element content] stringByReplacingOccurrencesOfString:@" GB" withString:@""] floatValue] * 1024;
+				} else	{
+					used = [[[element content] stringByReplacingOccurrencesOfString:@" MB" withString:@""] floatValue];
+				}
 			}else if (3 == counter) {
-				volume = [[element content] stringByReplacingOccurrencesOfString:@" MB" withString:@""];
+				textRange =[[element content] rangeOfString:@"GB"];
+				if(textRange.location != NSNotFound)
+				{
+					volume = [[[element content] stringByReplacingOccurrencesOfString:@" MB" withString:@""] floatValue] *1024;
+				} else	{
+					volume = [[[element content] stringByReplacingOccurrencesOfString:@" MB" withString:@""] floatValue];
+				}
 			}
 			counter++;
 		}
@@ -155,7 +167,7 @@
 			counter++;
 		}
 		
-		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo,createdAt) VALUES (%@,%@,'%@','%@','%@')", used ,volume, periodFrom,periodTo,[NSDate date] ,nil];
+		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo,createdAt) VALUES (%f,%f,'%@','%@','%@')", used ,volume, periodFrom,periodTo,[NSDate date] ,nil];
 		NSLog(@"sql expression : %@",expression);
 		myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
 		

@@ -25,6 +25,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	mobileNumber.placeholder = NSLocalizedString(@"Proximus Mobile Number",@"Proximus Mobile Number");
+	password.placeholder = NSLocalizedString(@"Password",@"Password");
+	
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	mobileNumber.text = [prefs stringForKey:@"loginMobileNumber"];
 	password.text = [prefs stringForKey:@"loginPassword"];

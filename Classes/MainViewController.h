@@ -13,6 +13,9 @@
 	Proximus *proximus;
 	IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;
+	IBOutlet UILabel *labelUsed;
+	IBOutlet UILabel *labelToUse;
+	IBOutlet UILabel *periodUsage;
 	IBOutlet UIProgressView *progressView;
 	IBOutlet UILabel *status;
 }
@@ -20,6 +23,9 @@
 @property(nonatomic,retain)Proximus *proximus;
 @property(nonatomic,retain)UILabel *mbUsed;
 @property(nonatomic,retain)UILabel *mbToUse;
+@property(nonatomic,retain)UILabel *labelUsed;
+@property(nonatomic,retain)UILabel *labelToUse;
+@property(nonatomic,retain)UILabel *periodUsage;
 @property(nonatomic,retain)UILabel *status;
 @property(nonatomic,retain)UIProgressView *progressView;
 

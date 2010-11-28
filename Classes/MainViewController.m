@@ -14,12 +14,18 @@
 @synthesize proximus;
 @synthesize mbUsed;
 @synthesize mbToUse;
+@synthesize labelUsed;
+@synthesize labelToUse;
+@synthesize periodUsage;
 @synthesize progressView;
 @synthesize status;
 
 - (void)dealloc {
 	[mbUsed release];
 	[mbToUse release];
+	[labelUsed release];
+	[labelToUse release];
+	[periodUsage release];
 	[progressView release];
 	[proximus release];
 	[status release];
@@ -57,6 +63,13 @@
 		[self flipSide];		
 	}
 	
+	// for debugging
+	NSArray *languages = [prefs objectForKey:@"AppleLanguages"];
+	NSString *currentLanguage = [languages objectAtIndex:0];
+	
+	NSLog(@"Current Locale: %@", [[NSLocale currentLocale] localeIdentifier]);
+	NSLog(@"Current language: %@", currentLanguage);
+	
 	[self displayRecentData];
 	NSLog(@"%@", @"viewDidLoad end");
 }
@@ -89,20 +102,53 @@
 		NSDate *formatterDate = [inputFormatter dateFromString:[row objectForKey:@"createdAt"]];
 		
 		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
-		[outputFormatter setDateFormat:@"'Last refresh at' HH:mm 'on' EEE d MMM"];
+		[outputFormatter setDateFormat:@"EEE d MMM HH:mm"];
 
-		status.text = [outputFormatter stringFromDate:formatterDate];
+		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:formatterDate],nil];
 		// formatting data end
 		
+		// formatting the dates for the usage period
+		[inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
+		[outputFormatter setDateFormat:@"d MMM"];
+		formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodFrom"]];
+		NSString *temp = [outputFormatter stringFromDate:formatterDate];
+		
+		[outputFormatter setDateFormat:@"d MMM H:mm"];
+		formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodTo"]];
+		
+		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:formatterDate],nil];
+		
+		if (used > 999) { 
+			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"GB",nil];
+		} else {
+			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"MB",nil];
+		}
+		
+		if ((volume-used) > 999) { 
+			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"GB",nil];
+		} else {
+			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"MB",nil];
+		}
+
 		[inputFormatter release];
 		[outputFormatter release];
 		
-		mbUsed.text = [NSString stringWithFormat:@"%d", used];
+		// setting the data labels
+		if (used > 999) {
+			mbUsed.text = [NSString stringWithFormat:@"%d", used/1024];
+		} else {
+			mbUsed.text = [NSString stringWithFormat:@"%d", used];
+		}
+
 		if (used > volume) {
 			mbToUse.text = @"0" ;
 			progressView.progress = 1;
 		} else {
-			mbToUse.text = [NSString stringWithFormat:@"%d", volume-used ] ;
+			if ((volume-used) > 999) {
+				mbToUse.text = [NSString stringWithFormat:@"%d", (volume-used)/1024 ] ;
+			} else {
+				mbToUse.text = [NSString stringWithFormat:@"%d", volume-used ] ;
+			}
 			progressView.progress = (float) used/volume;
 		}
 	}
