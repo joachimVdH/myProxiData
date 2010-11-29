@@ -53,7 +53,7 @@
 		
 		UIAlertView *noCredentials = [[UIAlertView alloc]
 								   initWithTitle:@""
-								   message:@"No mobile number and password available.\nPress i on the bottom right to enter your credentials."
+								   message: NSLocalizedString(@"no credentials", @"No mobile number and password available.\nPress i on the bottom right to enter your credentials.") 
 									delegate:nil
 								   cancelButtonTitle:@"ok"
 								   otherButtonTitles:nil];
