@@ -5,7 +5,5 @@
 build/
 # Ignore Finder spam.
 \.DS_Store
-githubs/asi-http-request
-githubs/hpple
-githubs/core-plot/.hgignore
-githubs/core-plot/.hgtags
+*.hgignore
+*.hgtags
