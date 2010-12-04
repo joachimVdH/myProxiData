@@ -6,10 +6,10 @@
 //  Copyright 4d.be 2010. All rights reserved.
 //
 
-#import "myProxiDataAppDelegate.h"
+#import "AppDelegate.h"
 #import "MainViewController.h"
 
-@implementation myProxiDataAppDelegate
+@implementation AppDelegate
 
 
 @synthesize window;

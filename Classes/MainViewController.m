@@ -7,8 +7,7 @@
 //
 
 #import "MainViewController.h"
-#import "myProxiDataAppDelegate.h"
-
+#import "AppDelegate.h"
 
 @implementation MainViewController
 @synthesize proximus;
@@ -80,7 +79,7 @@
 	int used ;
 	int volume ;
 	
-	myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
+	AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 	
 	NSError *err = NULL;
 	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY createdAt desc" error:&err];

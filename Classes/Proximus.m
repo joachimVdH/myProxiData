@@ -10,7 +10,7 @@
 #import "ASIFormDataRequest.h"
 #import "TFHpple.h"
 #import "CSqliteDatabase.h"
-#import "myProxiDataAppDelegate.h"
+#import "AppDelegate.h"
 
 @implementation Proximus
 
@@ -169,7 +169,7 @@
 		
 		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo,createdAt) VALUES (%f,%f,'%@','%@','%@')", used ,volume, periodFrom,periodTo,[NSDate date] ,nil];
 		NSLog(@"sql expression : %@",expression);
-		myProxiDataAppDelegate *appDelegate = (myProxiDataAppDelegate *)[[UIApplication sharedApplication] delegate];
+		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		
 		result = [appDelegate.db executeExpression:expression error:NULL];
 		NSLog(@"dbresult %d", result);
