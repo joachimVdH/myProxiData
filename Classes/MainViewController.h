@@ -10,6 +10,7 @@
 #import "Proximus.h"
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate,ProximusDelegate> {
+	NSManagedObjectContext *managedObjectContext;	
 	Proximus *proximus;
 	IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;
@@ -20,6 +21,7 @@
 	IBOutlet UILabel *status;
 }
 
+@property(nonatomic, retain)NSManagedObjectContext *managedObjectContext;
 @property(nonatomic,retain)Proximus *proximus;
 @property(nonatomic,retain)UILabel *mbUsed;
 @property(nonatomic,retain)UILabel *mbToUse;

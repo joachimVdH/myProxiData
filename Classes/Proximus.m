@@ -9,16 +9,17 @@
 #import "Proximus.h"
 #import "ASIFormDataRequest.h"
 #import "TFHpple.h"
-#import "CSqliteDatabase.h"
 #import "AppDelegate.h"
 
 @implementation Proximus
 
 @synthesize delegate;
+@synthesize managedObjectContext;
 
 - (void)dealloc {
+	[managedObjectContext release];
 	[delegate release];
-    [super dealloc];
+	[super dealloc];
 }
 
 - (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password
@@ -58,6 +59,7 @@
 	NSLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
 	//NSLog(@"loginDone : %@",responsedata);
+	ZAssert([responsedata length] <= 160,@"lenght of login response : %i",[responsedata length]);
 	if ([responsedata length] <= 160) {
 		//NSLog(@"lenght ok : %d",[responsedata length]);
 		[self grabURLInBackground];
@@ -116,12 +118,10 @@
 	
 	if ([elements count] == 3){
 		
-		BOOL result;
-		NSString *expression;
 		float used = 0.0;
 		float volume = 0.0;
-		NSString *periodFrom = nil;
-		NSString *periodTo = nil;
+		NSDate *periodFrom = nil;
+		NSDate *periodTo = nil;
 		int counter;
 		counter = 1;
 		
@@ -153,32 +153,38 @@
 		//[elements release],elements = nil;
 		elements = [xpathParser search:@"//div[@class='articleBody']//p//span[@class='date']"];
 		
-		//NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
-		//[dateFormat setDateFormat:@"dd/MM/yyyy - HHmm"];
+		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
+		[dateFormat setDateFormat:@"dd/MM/yyyy - HH:mm"];
 		
 		counter = 1;
 		for (TFHppleElement *element in elements) {
 			NSLog(@"element: %@", [element content]);
 			if(1 == counter){
-				periodFrom = [element content];
+				periodFrom = [dateFormat dateFromString:[element content]];
+				ZAssert(periodFrom != nil ,@"Must be a date !! : %@",[element content]);
 			}else {
-				periodTo = [element content];
+				periodTo = [dateFormat dateFromString:[element content]];
+				ZAssert(periodTo != nil ,@"Must be a date !! : %@",[element content]);
 			}
 			counter++;
 		}
 		
-		expression = [NSString stringWithFormat:@"INSERT INTO logs (used,volume,periodFrom,periodTo,createdAt) VALUES (%f,%f,'%@','%@','%@')", used ,volume, periodFrom,periodTo,[NSDate date] ,nil];
-		NSLog(@"sql expression : %@",expression);
-		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		
-		result = [appDelegate.db executeExpression:expression error:NULL];
-		NSLog(@"dbresult %d", result);
-		//[appDelegate release];
+		NSError *error = nil;
 		
+		NSManagedObject *entryLog = [NSEntityDescription insertNewObjectForEntityForName:@"EntryLog" inManagedObjectContext:managedObjectContext];
+		
+		[entryLog setValue:[NSNumber numberWithFloat:used] forKey:@"used"];
+    [entryLog setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
+    [entryLog setValue:periodFrom  forKey:@"periodFrom"];
+    [entryLog setValue:periodTo forKey:@"periodTo"];
+    [entryLog setValue:[NSDate date] forKey:@"createdAt"];
+    
+		ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
+
+		
+		[dateFormat release];
 		[[self delegate] proximusDidAddData];
-		
-		//[elements release],elements = nil;
-		//[dateFormat release],dateFormat = nil;
 		
 	} else {
 		NSLog(@"%@",@"no three elements for data");

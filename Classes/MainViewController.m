@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 
 @implementation MainViewController
+
+@synthesize managedObjectContext;
 @synthesize proximus;
 @synthesize mbUsed;
 @synthesize mbToUse;
@@ -20,6 +22,7 @@
 @synthesize status;
 
 - (void)dealloc {
+	[managedObjectContext release];
 	[mbUsed release];
 	[mbToUse release];
 	[labelUsed release];
@@ -38,6 +41,8 @@
 
 	proximus = [[Proximus alloc] init] ;
 	[proximus setDelegate:self]; 
+	[proximus setManagedObjectContext:[self managedObjectContext]];
+
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
 	NSString *loginMobileNumber = [prefs stringForKey:@"loginMobileNumber"];
@@ -73,49 +78,74 @@
 	NSLog(@"%@", @"viewDidLoad end");
 }
 
+// Implement viewWillAppear: to do additional setup before the view is presented. 
+// You might, for example, fetch objects from the managed object context if necessary.
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+}
 
 -(void)displayRecentData{
 	NSLog(@"%@", @"displayRecentData start");
 	int used ;
 	int volume ;
 	
-	AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+	//AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 	
-	NSError *err = NULL;
-	NSArray *rows = [appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY createdAt desc" error:&err];
-	NSLog(@"%@", err);
+	NSError *error = NULL;
+	
+	//TODO: COREDATA
+	
+	
+  NSFetchRequest *request = [[NSFetchRequest alloc] init];
+  [request setEntity:[NSEntityDescription entityForName:@"EntryLog" inManagedObjectContext:managedObjectContext]];
+  [request setFetchLimit:1];
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+  NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+  [request setSortDescriptors:sortDescriptors];
+	[sortDescriptor release];
+	[sortDescriptors release];
+	NSManagedObject *entryLog = [[managedObjectContext executeFetchRequest:request error:&error] lastObject];
+	//NSLog(@"entryLog : %@",entryLog);
+	ZAssert(error == nil, @"Error accessing context: %@", [error localizedDescription]);
+	
+  if (entryLog != nil) {
+		
+	
+	//NSArray *rows = [[NSArray alloc] init]; //[appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY createdAt desc" error:&err];
+	//NSLog(@"%@", error);
 	//NSLog(@"%@", rows);
 	
-	if ([rows count] > 0){
-		NSDictionary *row = [rows objectAtIndex:0];
+	//if ([rows count] > 0){
+		//NSDictionary *row = [rows objectAtIndex:0];
 		//NSLog(@"%@", row);	
 		
-		used = [[row objectForKey:@"used"] intValue] + 1;
-		volume = [[row objectForKey:@"volume"] intValue];
+		used = [[entryLog  valueForKey:@"used"] intValue] + 1; //[[row objectForKey:@"used"] intValue] + 1;
+		volume = [[entryLog valueForKey:@"volume"] intValue];  //[[row objectForKey:@"volume"] intValue];
 		
 		// formatting data start
-		NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
+		//NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
 		// http://unicode.org/reports/tr35/tr35-4.html#Date_Format_Patterns
-		[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
+		//[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
 		//NSLog(@"Raw Date : %@",[row objectForKey:@"createdAt"]);
-		NSDate *formatterDate = [inputFormatter dateFromString:[row objectForKey:@"createdAt"]];
+		//NSDate *formatterDate = [inputFormatter dateFromString:[row objectForKey:@"createdAt"]];
 		
 		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
 		[outputFormatter setDateFormat:@"EEE d MMM HH:mm"];
 
-		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:formatterDate],nil];
+		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog valueForKey:@"createdAt"]],nil];
 		// formatting data end
 		
 		// formatting the dates for the usage period
-		[inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
-		[outputFormatter setDateFormat:@"d MMM"];
-		formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodFrom"]];
-		NSString *temp = [outputFormatter stringFromDate:formatterDate];
+		//[inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
+	  [outputFormatter setDateFormat:@"d MMM"];
+		//formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodFrom"]];
+		NSString *temp = [outputFormatter stringFromDate:[entryLog valueForKey:@"periodFrom"]];
 		
 		[outputFormatter setDateFormat:@"d MMM H:mm"];
-		formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodTo"]];
+		//formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodTo"]];
 		
-		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:formatterDate],nil];
+		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:[entryLog valueForKey:@"periodTo"]],nil];
 		
 		if (used > 999) { 
 			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"GB",nil];
@@ -129,7 +159,7 @@
 			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"MB",nil];
 		}
 
-		[inputFormatter release];
+		//[inputFormatter release];
 		[outputFormatter release];
 		
 		// setting the data labels
@@ -151,6 +181,9 @@
 			progressView.progress = (float) used/volume;
 		}
 	}
+	
+	[request release];
+	[error	release];
 	NSLog(@"%@", @"displayRecentData end");
 }
 
