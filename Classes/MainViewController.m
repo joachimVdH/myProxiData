@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "AppDelegate.h"
+#import "EntryLog.h"
 
 @implementation MainViewController
 
@@ -31,36 +32,36 @@
 	[progressView release];
 	[proximus release];
 	[status release];
-    [super dealloc];
+  [super dealloc];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	NSLog(@"%@", @"viewDidLoad start");
+	DLog(@"%@", @"viewDidLoad start");
 	[super viewDidLoad];
-
+  
 	proximus = [[Proximus alloc] init] ;
 	[proximus setDelegate:self]; 
 	[proximus setManagedObjectContext:[self managedObjectContext]];
-
+  
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
 	NSString *loginMobileNumber = [prefs stringForKey:@"loginMobileNumber"];
 	NSString *loginPassword = [prefs stringForKey:@"loginPassword"];
 	
 	if (nil != loginMobileNumber && nil != loginPassword ){
-	
+    
 		[proximus setCredentials:loginMobileNumber yourPassword:loginPassword];
 		
 	} else {
-		NSLog(@"NO credentials - Time to flip the screen");		
+		DLog(@"NO credentials - Time to flip the screen");		
 		
 		UIAlertView *noCredentials = [[UIAlertView alloc]
-								   initWithTitle:@""
-								   message: NSLocalizedString(@"no credentials", @"No mobile number and password available.\nPress i on the bottom right to enter your credentials.") 
-									delegate:nil
-								   cancelButtonTitle:@"ok"
-								   otherButtonTitles:nil];
+                                  initWithTitle:@""
+                                  message: NSLocalizedString(@"no credentials", @"No mobile number and password available.\nPress i on the bottom right to enter your credentials.") 
+                                  delegate:nil
+                                  cancelButtonTitle:@"ok"
+                                  otherButtonTitles:nil];
 		
 		[noCredentials show];
 		[noCredentials release];
@@ -68,14 +69,11 @@
 	}
 	
 	// for debugging
-	NSArray *languages = [prefs objectForKey:@"AppleLanguages"];
-	NSString *currentLanguage = [languages objectAtIndex:0];
+	DLog(@"Current Locale: %@", [[NSLocale currentLocale] localeIdentifier]);
+	DLog(@"Current language: %@", [[prefs objectForKey:@"AppleLanguages"] objectAtIndex:0]);
 	
-	NSLog(@"Current Locale: %@", [[NSLocale currentLocale] localeIdentifier]);
-	NSLog(@"Current language: %@", currentLanguage);
-	
-	[self displayRecentData];
-	NSLog(@"%@", @"viewDidLoad end");
+	//[self displayRecentData];
+	DLog(@"%@", @"viewDidLoad end");
 }
 
 // Implement viewWillAppear: to do additional setup before the view is presented. 
@@ -85,17 +83,10 @@
 }
 
 -(void)displayRecentData{
-	NSLog(@"%@", @"displayRecentData start");
-	int used ;
-	int volume ;
-	
-	//AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-	
+	DLog(@"%@", @"displayRecentData start");
+
 	NSError *error = NULL;
-	
-	//TODO: COREDATA
-	
-	
+  
   NSFetchRequest *request = [[NSFetchRequest alloc] init];
   [request setEntity:[NSEntityDescription entityForName:@"EntryLog" inManagedObjectContext:managedObjectContext]];
   [request setFetchLimit:1];
@@ -105,90 +96,68 @@
   [request setSortDescriptors:sortDescriptors];
 	[sortDescriptor release];
 	[sortDescriptors release];
-	NSManagedObject *entryLog = [[managedObjectContext executeFetchRequest:request error:&error] lastObject];
-	//NSLog(@"entryLog : %@",entryLog);
+	EntryLog *entryLog = [[managedObjectContext executeFetchRequest:request error:&error] lastObject];
+	DLog(@"entryLog : %@",entryLog);
 	ZAssert(error == nil, @"Error accessing context: %@", [error localizedDescription]);
 	
   if (entryLog != nil) {
 		
-	
-	//NSArray *rows = [[NSArray alloc] init]; //[appDelegate.db rowsForExpression:@"SELECT * FROM logs ORDER BY createdAt desc" error:&err];
-	//NSLog(@"%@", error);
-	//NSLog(@"%@", rows);
-	
-	//if ([rows count] > 0){
-		//NSDictionary *row = [rows objectAtIndex:0];
-		//NSLog(@"%@", row);	
-		
-		used = [[entryLog  valueForKey:@"used"] intValue] + 1; //[[row objectForKey:@"used"] intValue] + 1;
-		volume = [[entryLog valueForKey:@"volume"] intValue];  //[[row objectForKey:@"volume"] intValue];
-		
-		// formatting data start
-		//NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
+		//--- formatting data start
 		// http://unicode.org/reports/tr35/tr35-4.html#Date_Format_Patterns
-		//[inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss Z"];
-		//NSLog(@"Raw Date : %@",[row objectForKey:@"createdAt"]);
-		//NSDate *formatterDate = [inputFormatter dateFromString:[row objectForKey:@"createdAt"]];
+		//DLog(@"Raw Date : %@",[entryLog createdAt]);
 		
 		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
 		[outputFormatter setDateFormat:@"EEE d MMM HH:mm"];
-
-		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog valueForKey:@"createdAt"]],nil];
-		// formatting data end
+    
+		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog createdAt]],nil];
+		//--- formatting data end
 		
 		// formatting the dates for the usage period
-		//[inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
 	  [outputFormatter setDateFormat:@"d MMM"];
-		//formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodFrom"]];
-		NSString *temp = [outputFormatter stringFromDate:[entryLog valueForKey:@"periodFrom"]];
+		NSString *temp = [outputFormatter stringFromDate:[entryLog periodFrom]];
 		
 		[outputFormatter setDateFormat:@"d MMM H:mm"];
-		//formatterDate = [inputFormatter dateFromString:[row objectForKey:@"periodTo"]];
 		
-		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:[entryLog valueForKey:@"periodTo"]],nil];
+		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:[entryLog periodTo]],nil];
 		
-		if (used > 999) { 
+		if ([entryLog consumed] > 999) { 
 			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"GB",nil];
 		} else {
 			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"MB",nil];
 		}
 		
-		if ((volume-used) > 999) { 
+		if ([entryLog toUse] > 999) { 
 			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"GB",nil];
 		} else {
 			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"MB",nil];
 		}
-
-		//[inputFormatter release];
+    
 		[outputFormatter release];
 		
 		// setting the data labels
-		if (used > 999) {
-			mbUsed.text = [NSString stringWithFormat:@"%d", used/1024];
+		if ([entryLog consumed] > 999) {
+			mbUsed.text = [NSString stringWithFormat:@"%d", [entryLog consumed] /1024];
 		} else {
-			mbUsed.text = [NSString stringWithFormat:@"%d", used];
+			mbUsed.text = [NSString stringWithFormat:@"%d", [entryLog consumed] ];
 		}
-
-		if (used > volume) {
-			mbToUse.text = @"0" ;
-			progressView.progress = 1;
-		} else {
-			if ((volume-used) > 999) {
-				mbToUse.text = [NSString stringWithFormat:@"%d", (volume-used)/1024 ] ;
-			} else {
-				mbToUse.text = [NSString stringWithFormat:@"%d", volume-used ] ;
-			}
-			progressView.progress = (float) used/volume;
-		}
+    
+    if ([entryLog toUse] > 999) {
+      mbToUse.text = [NSString stringWithFormat:@"%d", [entryLog toUse]/1024 ] ;
+    } else {
+      mbToUse.text = [NSString stringWithFormat:@"%d", [entryLog toUse] ] ;
+    }
+    //DLog(@"[entryLog percentage] : %f",[entryLog percentage]);
+    progressView.progress = [entryLog percentage];
+    
 	}
 	
 	[request release];
 	[error	release];
-	NSLog(@"%@", @"displayRecentData end");
+	DLog(@"%@", @"displayRecentData end");
 }
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
-    
+  
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
 	NSString *loginMobileNumber = [prefs stringForKey:@"loginMobileNumber"];
@@ -220,9 +189,9 @@
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+  [super didReceiveMemoryWarning];
 	
-	NSLog(@"%@", @"didReceiveMemoryWarning");
+	DLog(@"%@", @"didReceiveMemoryWarning");
 	// Release any cached data, images, etc. that aren't in use.
 }
 
@@ -234,18 +203,18 @@
 
 
 /*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Return YES for supported orientations.
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
+ // Override to allow orientations other than the default portrait orientation.
+ - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+ // Return YES for supported orientations.
+ return (interfaceOrientation == UIInterfaceOrientationPortrait);
+ }
+ */
 
 
 - (void)proximusDidAddData{
-	NSLog(@"%@", @"proximusDidAddData start");
+	DLog(@"%@", @"proximusDidAddData start");
 	[self displayRecentData];
-	NSLog(@"%@", @"proximusDidAddData end");
+	DLog(@"%@", @"proximusDidAddData end");
 }
 
 

@@ -10,6 +10,7 @@
 #import "ASIFormDataRequest.h"
 #import "TFHpple.h"
 #import "AppDelegate.h"
+#import "EntryLog.h"
 
 @implementation Proximus
 
@@ -24,7 +25,7 @@
 
 - (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password
 {
-	NSLog(@"setCredentials start") ;
+	DLog(@"setCredentials start") ;
 	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/LOG/login"];
 	ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
 	[request setDelegate:self];
@@ -39,56 +40,56 @@
 	[request setDidFinishSelector:@selector(loginDone:)];
 	[request setDidFailSelector:@selector(loginError:)];
 	[request startAsynchronous];
-	NSLog(@"setCredentials end") ;
+	DLog(@"setCredentials end") ;
 }
 
 - (void)grabURLInBackground
 {
-	NSLog(@"grabURLInBackground start") ;
+	DLog(@"grabURLInBackground start") ;
 	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl"];
 	ASIFormDataRequest *request = [ASIHTTPRequest requestWithURL:url];
 	[request setDelegate:self];
 	[request setDidFinishSelector:@selector(getDataDone:)];
 	[request setDidFailSelector:@selector(getDataError:)];
 	[request startAsynchronous];
-	NSLog(@"grabURLInBackground end") ;
+	DLog(@"grabURLInBackground end") ;
 }
 
 - (void)loginDone:(ASIHTTPRequest *)request
 {
-	NSLog(@"loginDone start") ;
+	DLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
-	//NSLog(@"loginDone : %@",responsedata);
+	//DLog(@"loginDone : %@",responsedata);
 	ZAssert([responsedata length] <= 160,@"lenght of login response : %i",[responsedata length]);
 	if ([responsedata length] <= 160) {
-		//NSLog(@"lenght ok : %d",[responsedata length]);
+		//DLog(@"lenght ok : %d",[responsedata length]);
 		[self grabURLInBackground];
 	} else {
-		NSLog(@"lenght not ok : %d",[responsedata length]);
+		DLog(@"lenght not ok : %d",[responsedata length]);
 		UIAlertView *errorAlert = [[UIAlertView alloc]
-								   initWithTitle:NSLocalizedString(@"no success",@"no success alert title")
-								   message:NSLocalizedString(@"Mobile number or password are not correct",@"Mobile number or password are not correct")
-								   delegate:nil
-								   cancelButtonTitle:@"ok"
-								   otherButtonTitles:nil];
+                               initWithTitle:NSLocalizedString(@"no success",@"no success alert title")
+                               message:NSLocalizedString(@"Mobile number or password are not correct",@"Mobile number or password are not correct")
+                               delegate:nil
+                               cancelButtonTitle:@"ok"
+                               otherButtonTitles:nil];
 		
 		[errorAlert show];
 		[errorAlert release];
 	}	
-	NSLog(@"loginDone end") ;
+	DLog(@"loginDone end") ;
 }
 
 - (void)loginError:(ASIHTTPRequest *)request
 {
 	//NSError *error = [request error];
-	//NSLog(@"loginError : %@",error);
+	//DLog(@"loginError : %@",error);
 	
 	UIAlertView *errorAlert = [[UIAlertView alloc]
-							  initWithTitle:NSLocalizedString(@"connection error",@"connection error alert title")
-							  message:NSLocalizedString(@"No internet connection available",@"No internet connection available")
-							  delegate:nil
-							  cancelButtonTitle:@"ok"
-							  otherButtonTitles:nil];
+                             initWithTitle:NSLocalizedString(@"connection error",@"connection error alert title")
+                             message:NSLocalizedString(@"No internet connection available",@"No internet connection available")
+                             delegate:nil
+                             cancelButtonTitle:@"ok"
+                             otherButtonTitles:nil];
 	
 	[errorAlert show];
 	[errorAlert release];
@@ -97,22 +98,22 @@
 
 - (void)getDataDone:(ASIHTTPRequest *)request
 {
-	NSLog(@"getDataDone start") ;
+	DLog(@"getDataDone start") ;
 	NSData *responsedata = [request responseData];	
-	//NSLog(@"getDataDone : %@",responsedata);
+	//DLog(@"getDataDone : %@",responsedata);
 	[self parseData:responsedata];
-	NSLog(@"getDataDone end");
+	DLog(@"getDataDone end");
 }
 
 - (void)getDataError:(ASIHTTPRequest *)request
 {
 	NSError *error = [request error];
-	NSLog(@"getDataError : %@",error);
+	DLog(@"getDataError : %@",error);
 }
 
 - (void)parseData:(NSData *)html
 {
-	NSLog(@"parseData ---- start");
+	DLog(@"parseData ---- start");
 	TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:html];
 	NSArray *elements  = [xpathParser search:@"//div[@class='articleBody']//p//strong"];
 	
@@ -129,7 +130,7 @@
 		
 		// assume when 3 you've got the data (less are remarks or not available ?)
 		for (TFHppleElement *element in elements) {
-			NSLog(@"element: %@", [element content]);
+			DLog(@"element: %@", [element content]);
 			if(1 == counter){
 				textRange =[[element content] rangeOfString:@"GB"];
 				if(textRange.location != NSNotFound)
@@ -158,7 +159,7 @@
 		
 		counter = 1;
 		for (TFHppleElement *element in elements) {
-			NSLog(@"element: %@", [element content]);
+			DLog(@"element: %@", [element content]);
 			if(1 == counter){
 				periodFrom = [dateFormat dateFromString:[element content]];
 				ZAssert(periodFrom != nil ,@"Must be a date !! : %@",[element content]);
@@ -172,26 +173,33 @@
 		
 		NSError *error = nil;
 		
-		NSManagedObject *entryLog = [NSEntityDescription insertNewObjectForEntityForName:@"EntryLog" inManagedObjectContext:managedObjectContext];
+		EntryLog *entryLog = [NSEntityDescription insertNewObjectForEntityForName:@"EntryLog" inManagedObjectContext:managedObjectContext];
 		
-		[entryLog setValue:[NSNumber numberWithFloat:used] forKey:@"used"];
-    [entryLog setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
-    [entryLog setValue:periodFrom  forKey:@"periodFrom"];
-    [entryLog setValue:periodTo forKey:@"periodTo"];
-    [entryLog setValue:[NSDate date] forKey:@"createdAt"];
-    
+		entryLog.used = [NSNumber numberWithFloat:used];
+		entryLog.volume = [NSNumber numberWithFloat:volume];
+		entryLog.periodFrom = periodFrom;
+		entryLog.periodTo = periodTo;
+		entryLog.createdAt = [NSDate date];
+		
+		/*
+     [entryLog setValue:[NSNumber numberWithFloat:used] forKey:@"used"];
+     [entryLog setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
+     [entryLog setValue:periodFrom  forKey:@"periodFrom"];
+     [entryLog setValue:periodTo forKey:@"periodTo"];
+     [entryLog setValue:[NSDate date] forKey:@"createdAt"];
+     */
+		
 		ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
-
-		
+    
 		[dateFormat release];
 		[[self delegate] proximusDidAddData];
 		
 	} else {
-		NSLog(@"%@",@"no three elements for data");
+		DLog(@"%@",@"no three elements for data");
 	}
-
+  
 	[xpathParser release];
-	NSLog(@"parseData ---- end");
+	DLog(@"parseData ---- end");
 	//return myTitle;
 }
 
