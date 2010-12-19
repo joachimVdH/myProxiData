@@ -15,22 +15,41 @@
 @synthesize delegate;
 @synthesize mobileNumber;
 @synthesize password;
+@synthesize visitProximusWebsite;
+@synthesize mailFeedback;
+@synthesize visit4dbe;
 
 
 - (void)dealloc {
-	[mobileNumber release];
-	[password release];
+  [visit4dbe release];
+  [mailFeedback release];
+  [visitProximusWebsite release];
+	[mobileNumber release]; 
+	[password release]; 
   [super dealloc];
 }
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-	mobileNumber.placeholder = NSLocalizedString(@"Proximus Mobile Number",@"Proximus Mobile Number");
-	password.placeholder = NSLocalizedString(@"Password",@"Password");
-	
+  
+  [mobileNumber setPlaceholder:NSLocalizedString(@"Proximus Mobile Number",@"Proximus Mobile Number") ];
+	[password setPlaceholder:NSLocalizedString(@"Password",@"Password")];
+  
+  [visit4dbe setTitle:NSLocalizedString(@"visit4dbe", @"Go to our website") forState:UIControlStateNormal];
+  [visit4dbe setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+  [visit4dbe setBackgroundColor:[UIColor blackColor]];
+  
+  [mailFeedback setTitle:NSLocalizedString(@"mailFeedback", @"Email your feedback") forState:UIControlStateNormal];
+  [mailFeedback setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+  [mailFeedback setBackgroundColor:[UIColor blackColor]];
+  
+  [visitProximusWebsite setTitle:NSLocalizedString(@"visitProximusWebsite", @"Go to Proximus Mobile website") forState:UIControlStateNormal];
+  [visitProximusWebsite setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+  [visitProximusWebsite setBackgroundColor:[UIColor blackColor]];
+  
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	mobileNumber.text = [prefs stringForKey:@"loginMobileNumber"];
-	password.text = [prefs stringForKey:@"loginPassword"];
+  [mobileNumber setText:[prefs stringForKey:@"loginMobileNumber"]];
+	[password setText:[prefs stringForKey:@"loginPassword"]];
 }
 
 
@@ -46,6 +65,14 @@
 	[sender resignFirstResponder];
 }
 
+- (IBAction)visitProximusWebsite:(id)sender{
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.proximus.be"]];  
+}
+
+- (IBAction)visit4dbe:(id)sender{
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.4d.be/apps/myProxiData"]];
+}
+
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
@@ -59,6 +86,89 @@
 	// e.g. self.myOutlet = nil;
 }
 
+
+#pragma mark -
+#pragma mark Feedback Mail
+
+- (IBAction)mailFeedback:(id)sender{
+  // Based on Mailcomposer example from Apple Inc.
+  // We must always check whether the current device is configured for sending emails
+	Class mailClass = (NSClassFromString(@"MFMailComposeViewController"));
+  if ([mailClass canSendMail]){
+    [self displayComposerSheet];
+  } else {
+    [self launchMailAppOnDevice];
+  }
+}
+
+// Displays an email composition interface inside the application. Populates all the Mail fields. 
+-(void)displayComposerSheet 
+{
+	MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+	picker.mailComposeDelegate = self;
+	
+	[picker setSubject:@"Feedback"];
+	
+  
+	// Set up recipients
+	NSArray *toRecipients = [NSArray arrayWithObject:@"myProxiData@4d.be"]; 
+	
+	[picker setToRecipients:toRecipients];
+	
+	// Attach an image to the email
+	//NSString *path = [[NSBundle mainBundle] pathForResource:@"rainy" ofType:@"png"];
+  //NSData *myData = [NSData dataWithContentsOfFile:path];
+	//[picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
+	
+	// Fill out the email body text
+	NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nBuild: %@\nOS: %@ %@\nDevice: %@\nUDID: %@",[UIApplication version],[UIApplication description],[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
+                         
+	[picker setMessageBody:emailBody isHTML:NO];
+	
+	[self presentModalViewController:picker animated:YES];
+  [picker release];
+}
+
+
+// Dismisses the email composition interface when users tap Cancel or Send. Proceeds to update the message field with the result of the operation.
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error 
+{	
+	// Notifies about errors associated with the interface
+	switch (result)
+	{
+		case MFMailComposeResultCancelled:
+			DLog (@"Result: canceled",@"");
+			break;
+		case MFMailComposeResultSaved:
+			DLog (@"Result: saved",@"");
+			break;
+		case MFMailComposeResultSent:
+			DLog (@"Result: sent",@"");
+			break;
+		case MFMailComposeResultFailed:
+			DLog (@"Result: failed",@"");
+			break;
+		default:
+			DLog (@"Result: not sent",@"");
+			break;
+	}
+	[self dismissModalViewControllerAnimated:YES];
+}
+
+
+// Launches the Mail application on the device.
+-(void)launchMailAppOnDevice
+{
+	NSString *recipients = @"mailto:first@example.com?cc=second@example.com,third@example.com&subject=Hello from California!";
+	NSString *body = @"&body=It is raining in sunny California!";
+	
+	NSString *email = [NSString stringWithFormat:@"%@%@", recipients, body];
+	email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
+}
+
+#pragma mark -
 
 /*
  // Override to allow orientations other than the default portrait orientation.
