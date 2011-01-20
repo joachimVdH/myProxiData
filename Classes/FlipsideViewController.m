@@ -121,7 +121,7 @@
 	//[picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
 	
 	// Fill out the email body text
-	NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nBuild: %@\nOS: %@ %@\nDevice: %@\nUDID: %@",[UIApplication version],[UIApplication description],[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
+	NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nBuild: %@\nOS: %@ %@\nDevice: %@\nUDID: %@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"],[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
                          
 	[picker setMessageBody:emailBody isHTML:NO];
 	

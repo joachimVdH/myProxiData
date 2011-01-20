@@ -46,7 +46,11 @@
 - (void)grabURLInBackground
 {
 	DLog(@"grabURLInBackground start") ;
-	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl"];
+	// 2010
+  //NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=en"];
+  // 2011
+  NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?lan=nl"];
+  
 	ASIFormDataRequest *request = [ASIHTTPRequest requestWithURL:url];
 	[request setDelegate:self];
 	[request setDidFinishSelector:@selector(getDataDone:)];
@@ -155,16 +159,19 @@
 		elements = [xpathParser search:@"//div[@class='articleBody']//p//span[@class='date']"];
 		
 		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
-		[dateFormat setDateFormat:@"dd/MM/yyyy - HH:mm"];
-		
+		// 2010 format
+    //[dateFormat setDateFormat:@"dd/MM/yyyy - HH:mm"];
+		// 2011 format              ma, jan 10, '11 - 00:00 after parsing => jan 10, 11 - 00:00
+    [dateFormat setDateFormat:@"MMM dd, yy - HH:mm"];
+    
 		counter = 1;
 		for (TFHppleElement *element in elements) {
 			DLog(@"element: %@", [element content]);
 			if(1 == counter){
-				periodFrom = [dateFormat dateFromString:[element content]];
+				periodFrom = [dateFormat dateFromString:[[[element content] stringByReplacingOccurrencesOfString:@"'" withString:@""] substringFromIndex:4 ]];
 				ZAssert(periodFrom != nil ,@"Must be a date !! : %@",[element content]);
 			}else {
-				periodTo = [dateFormat dateFromString:[element content]];
+				periodTo = [dateFormat dateFromString:[[[element content] stringByReplacingOccurrencesOfString:@"'" withString:@""] substringFromIndex:4 ]];
 				ZAssert(periodTo != nil ,@"Must be a date !! : %@",[element content]);
 			}
 			counter++;
