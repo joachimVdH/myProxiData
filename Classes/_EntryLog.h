@@ -11,6 +11,7 @@
 
 
 
+
 @interface EntryLogID : NSManagedObjectID {}
 @end
 
@@ -19,6 +20,18 @@
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (EntryLogID*)objectID;
+
+
+
+@property (nonatomic, retain) NSDate *createdAt;
+
+//- (BOOL)validateCreatedAt:(id*)value_ error:(NSError**)error_;
+
+
+
+@property (nonatomic, retain) NSDate *lastRefresh;
+
+//- (BOOL)validateLastRefresh:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -32,6 +45,12 @@
 
 
 
+@property (nonatomic, retain) NSDate *periodFrom;
+
+//- (BOOL)validatePeriodFrom:(id*)value_ error:(NSError**)error_;
+
+
+
 @property (nonatomic, retain) NSNumber *volume;
 
 @property float volumeValue;
@@ -42,21 +61,9 @@
 
 
 
-@property (nonatomic, retain) NSDate *periodFrom;
-
-//- (BOOL)validatePeriodFrom:(id*)value_ error:(NSError**)error_;
-
-
-
 @property (nonatomic, retain) NSDate *periodTo;
 
 //- (BOOL)validatePeriodTo:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSDate *createdAt;
-
-//- (BOOL)validateCreatedAt:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -70,11 +77,23 @@
 
 @interface _EntryLog (CoreDataGeneratedPrimitiveAccessors)
 
+- (NSDate*)primitiveCreatedAt;
+- (void)setPrimitiveCreatedAt:(NSDate*)value;
+
+
+- (NSDate*)primitiveLastRefresh;
+- (void)setPrimitiveLastRefresh:(NSDate*)value;
+
+
 - (NSNumber*)primitiveUsed;
 - (void)setPrimitiveUsed:(NSNumber*)value;
 
 - (float)primitiveUsedValue;
 - (void)setPrimitiveUsedValue:(float)value_;
+
+
+- (NSDate*)primitivePeriodFrom;
+- (void)setPrimitivePeriodFrom:(NSDate*)value;
 
 
 - (NSNumber*)primitiveVolume;
@@ -84,16 +103,8 @@
 - (void)setPrimitiveVolumeValue:(float)value_;
 
 
-- (NSDate*)primitivePeriodFrom;
-- (void)setPrimitivePeriodFrom:(NSDate*)value;
-
-
 - (NSDate*)primitivePeriodTo;
 - (void)setPrimitivePeriodTo:(NSDate*)value;
-
-
-- (NSDate*)primitiveCreatedAt;
-- (void)setPrimitiveCreatedAt:(NSDate*)value;
 
 
 

@@ -29,6 +29,20 @@
 
 
 
+@dynamic createdAt;
+
+
+
+
+
+
+@dynamic lastRefresh;
+
+
+
+
+
+
 @dynamic used;
 
 
@@ -50,6 +64,13 @@
 - (void)setPrimitiveUsedValue:(float)value_ {
 	[self setPrimitiveUsed:[NSNumber numberWithFloat:value_]];
 }
+
+
+
+
+
+@dynamic periodFrom;
+
 
 
 
@@ -81,21 +102,7 @@
 
 
 
-@dynamic periodFrom;
-
-
-
-
-
-
 @dynamic periodTo;
-
-
-
-
-
-
-@dynamic createdAt;
 
 
 

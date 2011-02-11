@@ -8,11 +8,14 @@
 
 #import "FlipsideViewController.h"
 #import "Proximus.h"
+#import "EntryLog.h"
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate,ProximusDelegate> {
 	NSManagedObjectContext *managedObjectContext;	
 	Proximus *proximus;
-	IBOutlet UILabel *mbUsed;
+  EntryLog *entryLog;
+	
+  IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;
 	IBOutlet UILabel *labelUsed;
 	IBOutlet UILabel *labelToUse;
@@ -23,6 +26,8 @@
 
 @property(nonatomic, retain)NSManagedObjectContext *managedObjectContext;
 @property(nonatomic,retain)Proximus *proximus;
+@property(nonatomic,retain)EntryLog *entryLog;
+
 @property(nonatomic,retain)UILabel *mbUsed;
 @property(nonatomic,retain)UILabel *mbToUse;
 @property(nonatomic,retain)UILabel *labelUsed;
@@ -35,5 +40,6 @@
 
 - (void)displayRecentData;
 - (void)flipSide;
+- (void)setCurrentEntryLog;
 
 @end

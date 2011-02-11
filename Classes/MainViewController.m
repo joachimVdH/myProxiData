@@ -14,6 +14,8 @@
 
 @synthesize managedObjectContext;
 @synthesize proximus;
+@synthesize entryLog;
+
 @synthesize mbUsed;
 @synthesize mbToUse;
 @synthesize labelUsed;
@@ -24,13 +26,15 @@
 
 - (void)dealloc {
 	[managedObjectContext release];
+	[proximus release];
+  [entryLog release];
+  
 	[mbUsed release];
 	[mbToUse release];
 	[labelUsed release];
 	[labelToUse release];
 	[periodUsage release];
 	[progressView release];
-	[proximus release];
 	[status release];
   [super dealloc];
 }
@@ -39,10 +43,12 @@
 - (void)viewDidLoad {
 	DLog(@"%@", @"viewDidLoad start");
 	[super viewDidLoad];
+  [self setCurrentEntryLog];
   
 	proximus = [[Proximus alloc] init] ;
 	[proximus setDelegate:self]; 
 	[proximus setManagedObjectContext:[self managedObjectContext]];
+  [proximus setEntryLog:entryLog];
   
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	
@@ -82,24 +88,9 @@
 	[super viewWillAppear:animated];
 }
 
--(void)displayRecentData{
+- (void)displayRecentData{
 	DLog(@"%@", @"displayRecentData start");
 
-	NSError *error = NULL;
-  
-  NSFetchRequest *request = [[NSFetchRequest alloc] init];
-  [request setEntity:[NSEntityDescription entityForName:@"EntryLog" inManagedObjectContext:managedObjectContext]];
-  [request setFetchLimit:1];
-	
-	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
-  NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-  [request setSortDescriptors:sortDescriptors];
-	[sortDescriptor release];
-	[sortDescriptors release];
-	EntryLog *entryLog = [[managedObjectContext executeFetchRequest:request error:&error] lastObject];
-	DLog(@"entryLog : %@",entryLog);
-	ZAssert(error == nil, @"Error accessing context: %@", [error localizedDescription]);
-	
   if (entryLog != nil) {
 		
 		//--- formatting data start
@@ -109,7 +100,7 @@
 		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
 		[outputFormatter setDateFormat:@"EEE d MMM HH:mm"];
     
-		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog createdAt]],nil];
+		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog lastRefresh]],nil];
 		//--- formatting data end
 		
 		// formatting the dates for the usage period
@@ -151,9 +142,29 @@
     
 	}
 	
+	DLog(@"%@", @"displayRecentData end");
+}
+
+- (void)setCurrentEntryLog{
+  NSError *error = NULL;
+  
+  NSFetchRequest *request = [[NSFetchRequest alloc] init];
+  [request setEntity:[NSEntityDescription entityForName:@"EntryLog" inManagedObjectContext:managedObjectContext]];
+  [request setFetchLimit:1];
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+  NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+  [request setSortDescriptors:sortDescriptors];
+	[sortDescriptor release];
+	[sortDescriptors release];
+	
+  entryLog = [[managedObjectContext executeFetchRequest:request error:&error] lastObject];
+	
+  DLog(@"entryLog : %@",entryLog);
+	ZAssert(error == nil, @"Error accessing context: %@", [error localizedDescription]);
+  
 	[request release];
 	[error	release];
-	DLog(@"%@", @"displayRecentData end");
 }
 
 - (void)flipsideViewControllerDidFinish:(FlipsideViewController *)controller {
@@ -170,7 +181,6 @@
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-
 - (void)flipSide {
 	
 	FlipsideViewController *controller = [[FlipsideViewController alloc] initWithNibName:@"FlipsideView" bundle:nil];
@@ -186,7 +196,6 @@
 	[self flipSide];
 }
 
-
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
@@ -195,12 +204,10 @@
 	// Release any cached data, images, etc. that aren't in use.
 }
 
-
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
-
 
 /*
  // Override to allow orientations other than the default portrait orientation.
@@ -210,12 +217,11 @@
  }
  */
 
-
 - (void)proximusDidAddData{
 	DLog(@"%@", @"proximusDidAddData start");
+  [self setCurrentEntryLog];
 	[self displayRecentData];
 	DLog(@"%@", @"proximusDidAddData end");
 }
-
 
 @end

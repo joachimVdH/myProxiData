@@ -167,7 +167,12 @@
 	
 	NSError *error = nil;
 	persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-	if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+  
+  NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:
+                           [NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption,
+                           [NSNumber numberWithBool:YES],NSInferMappingModelAutomaticallyOption, nil];
+  
+	if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error]) {
 		/*
 		 Replace this implementation with code to handle the error appropriately.
 		 
@@ -191,10 +196,11 @@
 		 Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
 		 
 		 */
-		DLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
+		ALog(@"Unresolved error %@, %@", error, [error userInfo]);
+		//abort();
 	}    
-	
+	[options release];
+  
 	return persistentStoreCoordinator_;
 }
 

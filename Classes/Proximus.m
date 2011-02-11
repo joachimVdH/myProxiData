@@ -16,16 +16,22 @@
 
 @synthesize delegate;
 @synthesize managedObjectContext;
+@synthesize entryLog;
 
 - (void)dealloc {
+  [entryLog release];
 	[managedObjectContext release];
 	[delegate release];
 	[super dealloc];
 }
 
-- (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password
-{
+- (void)setCredentials:(NSString *)mobileNumber yourPassword:(NSString *)password {
 	DLog(@"setCredentials start") ;
+  if (entryLog != nil &&  [[NSDate date] timeIntervalSinceDate:entryLog.createdAt] < 3600 ){
+    entryLog.lastRefresh = [NSDate date];
+		[[self delegate] proximusDidAddData];
+    DLog(@"setCredentials stopped : refresh in less then an hour") ;
+  }else{
 	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/LOG/login"];
 	ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
 	[request setDelegate:self];
@@ -40,11 +46,11 @@
 	[request setDidFinishSelector:@selector(loginDone:)];
 	[request setDidFailSelector:@selector(loginError:)];
 	[request startAsynchronous];
+  }
 	DLog(@"setCredentials end") ;
 }
 
-- (void)grabURLInBackground
-{
+- (void)grabURLInBackground {
 	DLog(@"grabURLInBackground start") ;
 	// 2010
   //NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=en"];
@@ -59,8 +65,7 @@
 	DLog(@"grabURLInBackground end") ;
 }
 
-- (void)loginDone:(ASIHTTPRequest *)request
-{
+- (void)loginDone:(ASIHTTPRequest *)request {
 	DLog(@"loginDone start") ;
 	NSString *responsedata = [request responseString];	
 	//DLog(@"loginDone : %@",responsedata);
@@ -83,8 +88,7 @@
 	DLog(@"loginDone end") ;
 }
 
-- (void)loginError:(ASIHTTPRequest *)request
-{
+- (void)loginError:(ASIHTTPRequest *)request {
 	//NSError *error = [request error];
 	//DLog(@"loginError : %@",error);
 	
@@ -100,8 +104,7 @@
 	
 }
 
-- (void)getDataDone:(ASIHTTPRequest *)request
-{
+- (void)getDataDone:(ASIHTTPRequest *)request {
 	DLog(@"getDataDone start") ;
 	NSData *responsedata = [request responseData];	
 	//DLog(@"getDataDone : %@",responsedata);
@@ -109,14 +112,12 @@
 	DLog(@"getDataDone end");
 }
 
-- (void)getDataError:(ASIHTTPRequest *)request
-{
+- (void)getDataError:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
 	DLog(@"getDataError : %@",error);
 }
 
-- (void)parseData:(NSData *)html
-{
+- (void)parseData:(NSData *)html {
 	DLog(@"parseData ---- start");
 	TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:html];
 	NSArray *elements  = [xpathParser search:@"//div[@class='articleBody']//p//strong"];
@@ -177,17 +178,17 @@
 			counter++;
 		}
 		
-		
 		NSError *error = nil;
 		
-		EntryLog *entryLog = [NSEntityDescription insertNewObjectForEntityForName:@"EntryLog" inManagedObjectContext:managedObjectContext];
+		EntryLog *newEntryLog = [NSEntityDescription insertNewObjectForEntityForName:@"EntryLog" inManagedObjectContext:managedObjectContext];
 		
-		entryLog.used = [NSNumber numberWithFloat:used];
-		entryLog.volume = [NSNumber numberWithFloat:volume];
-		entryLog.periodFrom = periodFrom;
-		entryLog.periodTo = periodTo;
-		entryLog.createdAt = [NSDate date];
-		
+		newEntryLog.used = [NSNumber numberWithFloat:used];
+		newEntryLog.volume = [NSNumber numberWithFloat:volume];
+		newEntryLog.periodFrom = periodFrom;
+		newEntryLog.periodTo = periodTo;
+		newEntryLog.createdAt = [NSDate date];
+		newEntryLog.lastRefresh = [NSDate date];
+    
 		/*
      [entryLog setValue:[NSNumber numberWithFloat:used] forKey:@"used"];
      [entryLog setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
@@ -199,12 +200,18 @@
 		ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
     
 		[dateFormat release];
-		[[self delegate] proximusDidAddData];
+    [error	release];
 		
 	} else {
 		DLog(@"%@",@"no three elements for data");
+    
+    if (entryLog != nil) {
+      entryLog.lastRefresh = [NSDate date];
+      //ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
+    }
 	}
   
+  [[self delegate] proximusDidAddData];
 	[xpathParser release];
 	DLog(@"parseData ---- end");
 	//return myTitle;
