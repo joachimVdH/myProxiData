@@ -92,24 +92,19 @@
 	DLog(@"%@", @"displayRecentData start");
 
   if (entryLog != nil) {
-		
-		//--- formatting data start
 		// http://unicode.org/reports/tr35/tr35-4.html#Date_Format_Patterns
-		//DLog(@"Raw Date : %@",[entryLog createdAt]);
 		
 		NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
 		[outputFormatter setDateFormat:@"EEE d MMM HH:mm"];
     
 		status.text = [NSString stringWithFormat:NSLocalizedString(@"Last refresh at", @"Last refresh at %@") , [outputFormatter stringFromDate:[entryLog lastRefresh]],nil];
-		//--- formatting data end
 		
+		[outputFormatter release];
+    
 		// formatting the dates for the usage period
-	  [outputFormatter setDateFormat:@"d MMM"];
-		NSString *temp = [outputFormatter stringFromDate:[entryLog periodFrom]];
+    NSString *temp = [[[entryLog periodFromText] substringToIndex:[[entryLog periodFromText] length]-11 ]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
-		[outputFormatter setDateFormat:@"d MMM H:mm"];
-		
-		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[outputFormatter stringFromDate:[entryLog periodTo]],nil];
+		periodUsage.text = [NSString stringWithFormat:NSLocalizedString(@"usage from to",@"usage from %@ to %@"),temp,[entryLog periodToText],nil];
 		
 		if ([entryLog consumed] > 999) { 
 			labelUsed.text = [NSString stringWithFormat:NSLocalizedString(@"MB used",@"%@ used"),@"GB",nil];
@@ -123,7 +118,6 @@
 			labelToUse.text = [NSString stringWithFormat:NSLocalizedString(@"MB to use",@"%@ to use"),@"MB",nil];
 		}
     
-		[outputFormatter release];
 		
 		// setting the data labels
 		if ([entryLog consumed] > 999) {

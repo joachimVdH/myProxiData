@@ -126,8 +126,10 @@
 		
 		float used = 0.0;
 		float volume = 0.0;
-		NSDate *periodFrom = nil;
-		NSDate *periodTo = nil;
+		//NSDate *periodFrom = nil;
+		//NSDate *periodTo = nil;
+    NSString *periodFromText = nil;
+    NSString *periodToText = nil;
 		int counter;
 		counter = 1;
 		
@@ -165,15 +167,14 @@
 		// 2011 format              ma, jan 10, '11 - 00:00 after parsing => jan 10, 11 - 00:00
     [dateFormat setDateFormat:@"MMM dd, yy - HH:mm"];
     
+    //NSString *t;
 		counter = 1;
 		for (TFHppleElement *element in elements) {
 			DLog(@"element: %@", [element content]);
-			if(1 == counter){
-				periodFrom = [dateFormat dateFromString:[[[element content] stringByReplacingOccurrencesOfString:@"'" withString:@""] substringFromIndex:4 ]];
-				ZAssert(periodFrom != nil ,@"Must be a date !! : %@",[element content]);
+			if(1 == counter){ 
+        periodFromText = [self formatBelgianDate:[element content]];
 			}else {
-				periodTo = [dateFormat dateFromString:[[[element content] stringByReplacingOccurrencesOfString:@"'" withString:@""] substringFromIndex:4 ]];
-				ZAssert(periodTo != nil ,@"Must be a date !! : %@",[element content]);
+        periodToText = [self formatBelgianDate:[element content]];
 			}
 			counter++;
 		}
@@ -184,18 +185,10 @@
 		
 		newEntryLog.used = [NSNumber numberWithFloat:used];
 		newEntryLog.volume = [NSNumber numberWithFloat:volume];
-		newEntryLog.periodFrom = periodFrom;
-		newEntryLog.periodTo = periodTo;
+		newEntryLog.periodFromText = periodFromText;
+		newEntryLog.periodToText = periodToText;
 		newEntryLog.createdAt = [NSDate date];
 		newEntryLog.lastRefresh = [NSDate date];
-    
-		/*
-     [entryLog setValue:[NSNumber numberWithFloat:used] forKey:@"used"];
-     [entryLog setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
-     [entryLog setValue:periodFrom  forKey:@"periodFrom"];
-     [entryLog setValue:periodTo forKey:@"periodTo"];
-     [entryLog setValue:[NSDate date] forKey:@"createdAt"];
-     */
 		
 		ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
     
@@ -215,6 +208,23 @@
 	[xpathParser release];
 	DLog(@"parseData ---- end");
 	//return myTitle;
+}
+
+- (NSString*)formatBelgianDate:(NSString*)proximusDate
+{
+  // current input : za, mrt 5, '11 - 19:19
+  //                 do, feb 10, '11 - 00:00
+  // desired output : 5 mrt '11 - 19:19
+  
+  NSString *theMonth;
+  NSString *theDay;
+  NSString *theRest;
+  
+  theMonth = [proximusDate substringWithRange:NSMakeRange(4,3)];
+  theDay = [[proximusDate substringWithRange:NSMakeRange(8,2)] stringByReplacingOccurrencesOfString:@"," withString:@""] ;
+  theRest = [[proximusDate substringFromIndex:11] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  
+  return [NSString stringWithFormat:@"%@ %@ %@",theDay,theMonth,theRest,nil];
 }
 
 @end

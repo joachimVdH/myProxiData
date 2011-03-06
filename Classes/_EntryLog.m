@@ -29,20 +29,6 @@
 
 
 
-@dynamic createdAt;
-
-
-
-
-
-
-@dynamic lastRefresh;
-
-
-
-
-
-
 @dynamic used;
 
 
@@ -69,7 +55,7 @@
 
 
 
-@dynamic periodFrom;
+@dynamic periodTo;
 
 
 
@@ -102,7 +88,35 @@
 
 
 
-@dynamic periodTo;
+@dynamic periodFrom;
+
+
+
+
+
+
+@dynamic periodFromText;
+
+
+
+
+
+
+@dynamic lastRefresh;
+
+
+
+
+
+
+@dynamic periodToText;
+
+
+
+
+
+
+@dynamic createdAt;
 
 
 

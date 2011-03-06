@@ -107,7 +107,7 @@
 	MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
 	picker.mailComposeDelegate = self;
 	
-	[picker setSubject:@"Feedback"];
+	[picker setSubject:@"myProxiData Feedback"];
 	
   
 	// Set up recipients
@@ -121,7 +121,7 @@
 	//[picker addAttachmentData:myData mimeType:@"image/png" fileName:@"rainy"];
 	
 	// Fill out the email body text
-	NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nBuild: %@\nOS: %@ %@\nDevice: %@\nUDID: %@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"],[[UIDevice currentDevice] systemName],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
+	NSString *emailBody = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nOS: %@\nUDID: %@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
                          
 	[picker setMessageBody:emailBody isHTML:NO];
 	
@@ -159,9 +159,9 @@
 // Launches the Mail application on the device.
 -(void)launchMailAppOnDevice
 {
-	NSString *recipients = @"mailto:first@example.com?cc=second@example.com,third@example.com&subject=Hello from California!";
-	NSString *body = @"&body=It is raining in sunny California!";
-	
+	NSString *recipients = @"mailto:myProxiData@4d.be?subject=myProxiData Feedback";
+	NSString *body = [NSString stringWithFormat:@"\n\n\n\nThanks from 4d.be Apps!\n---\nVersion: %@\nOS: %@\nUDID: %@",[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] uniqueIdentifier],nil ] ;
+  
 	NSString *email = [NSString stringWithFormat:@"%@%@", recipients, body];
 	email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	

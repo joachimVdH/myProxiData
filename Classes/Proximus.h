@@ -31,6 +31,7 @@
 - (void)grabURLInBackground;
 - (void)parseData:(NSData *)html;
 //- (float)getUsedData:(NSData *)html;
+- (NSString*)formatBelgianDate:(NSString*)proximusDate;
 
 @end
 
