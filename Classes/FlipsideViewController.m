@@ -35,17 +35,14 @@
   [mobileNumber setPlaceholder:NSLocalizedString(@"Proximus Mobile Number",@"Proximus Mobile Number") ];
 	[password setPlaceholder:NSLocalizedString(@"Password",@"Password")];
   
+  [visit4dbe useBlackStyle];
   [visit4dbe setTitle:NSLocalizedString(@"visit4dbe", @"Go to our website") forState:UIControlStateNormal];
-  [visit4dbe setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [visit4dbe setBackgroundColor:[UIColor blackColor]];
   
+  [mailFeedback useBlackStyle];
   [mailFeedback setTitle:NSLocalizedString(@"mailFeedback", @"Email your feedback") forState:UIControlStateNormal];
-  [mailFeedback setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [mailFeedback setBackgroundColor:[UIColor blackColor]];
   
+  [visitProximusWebsite useBlackStyle];
   [visitProximusWebsite setTitle:NSLocalizedString(@"visitProximusWebsite", @"Go to Proximus Mobile website") forState:UIControlStateNormal];
-  [visitProximusWebsite setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [visitProximusWebsite setBackgroundColor:[UIColor blackColor]];
   
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
   [mobileNumber setText:[prefs stringForKey:@"loginMobileNumber"]];

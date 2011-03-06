@@ -9,6 +9,7 @@
 //#import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import "GradientButton.h"
 
 @protocol FlipsideViewControllerDelegate;
 
@@ -18,16 +19,16 @@
 	id <FlipsideViewControllerDelegate> delegate;
 	IBOutlet UITextField *mobileNumber;
 	IBOutlet UITextField *password;
-  IBOutlet UIButton *visitProximusWebsite;
-  IBOutlet UIButton *mailFeedback;
-  IBOutlet UIButton *visit4dbe;
+  IBOutlet GradientButton *visitProximusWebsite;
+  IBOutlet GradientButton *mailFeedback;
+  IBOutlet GradientButton *visit4dbe;
 }
 
 @property (nonatomic,retain) UITextField *mobileNumber;
 @property (nonatomic,retain) UITextField *password;
-@property (nonatomic,retain) UIButton *visitProximusWebsite;
-@property (nonatomic,retain) UIButton *mailFeedback;
-@property (nonatomic,retain) UIButton *visit4dbe;
+@property (nonatomic,retain) GradientButton *visitProximusWebsite;
+@property (nonatomic,retain) GradientButton *mailFeedback;
+@property (nonatomic,retain) GradientButton *visit4dbe;
 
 - (IBAction)textFieldDoneEditing:(id)sender;
 - (IBAction)visitProximusWebsite:(id)sender;
