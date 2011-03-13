@@ -113,8 +113,8 @@
 }
 
 - (void)getDataError:(ASIHTTPRequest *)request {
-	NSError *error = [request error];
-	DLog(@"getDataError : %@",error);
+	//NSError *error = [request error];
+	DLog(@"getDataError : %@",[request error]);
 }
 
 - (void)parseData:(NSData *)html {
