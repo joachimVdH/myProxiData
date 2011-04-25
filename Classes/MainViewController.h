@@ -9,12 +9,17 @@
 #import "FlipsideViewController.h"
 #import "Proximus.h"
 #import "EntryLog.h"
+#import "CorePlot-CocoaTouch.h"
+#import "CPClearTheme.h"
 
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate,ProximusDelegate> {
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate,ProximusDelegate,CPPlotDataSource> {
 	NSManagedObjectContext *managedObjectContext;	
 	Proximus *proximus;
   EntryLog *entryLog;
+  CPXYGraph *graph;
+	NSMutableArray *dataForPlot;
 	
+  IBOutlet CPGraphHostingView *hostingView;
   IBOutlet UILabel *mbUsed;
 	IBOutlet UILabel *mbToUse;
 	IBOutlet UILabel *labelUsed;
@@ -27,7 +32,9 @@
 @property(nonatomic, retain)NSManagedObjectContext *managedObjectContext;
 @property(nonatomic,retain)Proximus *proximus;
 @property(nonatomic,retain)EntryLog *entryLog;
+@property(readwrite, retain, nonatomic) NSMutableArray *dataForPlot;
 
+@property(nonatomic,retain)CPGraphHostingView *hostingView;
 @property(nonatomic,retain)UILabel *mbUsed;
 @property(nonatomic,retain)UILabel *mbToUse;
 @property(nonatomic,retain)UILabel *labelUsed;
@@ -41,5 +48,6 @@
 - (void)displayRecentData;
 - (void)flipSide;
 - (void)setCurrentEntryLog;
+- (void)createGraph;
 
 @end

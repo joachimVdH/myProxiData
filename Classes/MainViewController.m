@@ -15,6 +15,8 @@
 @synthesize managedObjectContext;
 @synthesize proximus;
 @synthesize entryLog;
+@synthesize dataForPlot;
+@synthesize hostingView;
 
 @synthesize mbUsed;
 @synthesize mbToUse;
@@ -28,6 +30,7 @@
 	[managedObjectContext release];
 	[proximus release];
   [entryLog release];
+	[dataForPlot release];
   
 	[mbUsed release];
 	[mbToUse release];
@@ -74,6 +77,10 @@
 		[self flipSide];		
 	}
 	
+  // CorePlot
+  [self createGraph];
+  
+  
 	// for debugging
 	DLog(@"Current Locale: %@", [[NSLocale currentLocale] localeIdentifier]);
 	DLog(@"Current language: %@", [[prefs objectForKey:@"AppleLanguages"] objectAtIndex:0]);
@@ -218,4 +225,86 @@
 	DLog(@"%@", @"proximusDidAddData end");
 }
 
+#pragma mark -
+#pragma mark Plot Data Methods
+
+-(void)createGraph{
+  graph = [[CPXYGraph alloc] initWithFrame:CGRectZero];
+	CPClearTheme *theme = [[CPClearTheme alloc]init];
+  [graph applyTheme:theme];
+  [theme release];
+  
+	hostingView.collapsesLayers = NO; // Setting to YES reduces GPU memory usage, but can slow drawing/scrolling
+  hostingView.hostedGraph = graph;
+  [graph release];
+  
+  
+  graph.paddingLeft = 15.0;
+	graph.paddingTop = 15.0;
+	graph.paddingRight = 15.0;
+	graph.paddingBottom = 0.0;
+  
+  // Setup plot space
+  CPXYPlotSpace *plotSpace = (CPXYPlotSpace *)graph.defaultPlotSpace;
+  plotSpace.allowsUserInteraction = YES;
+  plotSpace.xRange = [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.0) length:CPDecimalFromFloat(2.0)];
+  plotSpace.yRange = [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.0) length:CPDecimalFromFloat(3.0)];
+  
+  // Axes
+	CPXYAxisSet *axisSet = (CPXYAxisSet *)graph.axisSet;
+  CPXYAxis *x = axisSet.xAxis;
+  x.majorIntervalLength = CPDecimalFromString(@"0.5");
+  x.orthogonalCoordinateDecimal = CPDecimalFromString(@"2");
+  x.minorTicksPerInterval = 2;
+ 	NSArray *exclusionRanges = [NSArray arrayWithObjects:
+                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.99) length:CPDecimalFromFloat(0.02)], 
+                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(0.99) length:CPDecimalFromFloat(0.02)],
+                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(2.99) length:CPDecimalFromFloat(0.02)],
+                              nil];
+	x.labelExclusionRanges = exclusionRanges;
+  
+  CPXYAxis *y = axisSet.yAxis;
+  y.majorIntervalLength = CPDecimalFromString(@"0.5");
+  y.minorTicksPerInterval = 5;
+  y.orthogonalCoordinateDecimal = CPDecimalFromString(@"2");
+	exclusionRanges = [NSArray arrayWithObjects:
+                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.99) length:CPDecimalFromFloat(0.02)], 
+                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(0.99) length:CPDecimalFromFloat(0.02)],
+                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(3.99) length:CPDecimalFromFloat(0.02)],
+                     nil];
+	y.labelExclusionRanges = exclusionRanges;
+  
+	// Create a blue plot area
+	CPScatterPlot *boundLinePlot = [[[CPScatterPlot alloc] init] autorelease];
+  CPMutableLineStyle *lineStyle = [CPMutableLineStyle lineStyle];
+  lineStyle.miterLimit = 1.0f;
+	lineStyle.lineWidth = 3.0f;
+	lineStyle.lineColor = [CPColor whiteColor];
+  boundLinePlot.dataLineStyle = lineStyle;
+  boundLinePlot.identifier = @"white Plot";
+  boundLinePlot.dataSource = self;
+	[graph addPlot:boundLinePlot];
+	
+	// Do a white gradient
+  
+	CPColor *areaColor1 = [CPColor colorWithComponentRed:1.0 green:1.0 blue:1.0 alpha:0.8];
+  CPGradient *areaGradient1 = [CPGradient gradientWithBeginningColor:areaColor1 endingColor:[CPColor clearColor]];
+  areaGradient1.angle = -90.0f;
+  CPFill *areaGradientFill = [CPFill fillWithGradient:areaGradient1];
+  boundLinePlot.areaFill = areaGradientFill;
+  boundLinePlot.areaBaseValue = [[NSDecimalNumber zero] decimalValue];  
+  
+}
+
+-(NSUInteger)numberOfRecordsForPlot:(CPPlot *)plot {
+  return [dataForPlot count];
+}
+
+/*
+-(NSNumber *)numberForPlot:(CPPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index 
+{
+  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPScatterPlotFieldX ? @"x" : @"y")];
+	
+  return num;
+}*/
 @end
