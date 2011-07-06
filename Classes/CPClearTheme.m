@@ -45,11 +45,11 @@
   CPMutableLineStyle *majorLineStyle = [CPMutableLineStyle lineStyle];
   majorLineStyle.lineCap = kCGLineCapRound;
   majorLineStyle.lineColor = [CPColor whiteColor];
-  majorLineStyle.lineWidth = 2.0;
+  majorLineStyle.lineWidth = 1.0;
   
   CPMutableLineStyle *minorLineStyle = [CPMutableLineStyle lineStyle];
   minorLineStyle.lineColor = [CPColor whiteColor];
-  minorLineStyle.lineWidth = 2.0;
+  minorLineStyle.lineWidth = 1.0;
 	
   CPXYAxis *x = axisSet.xAxis;
 	CPMutableTextStyle *whiteTextStyle = [[[CPMutableTextStyle alloc] init] autorelease];

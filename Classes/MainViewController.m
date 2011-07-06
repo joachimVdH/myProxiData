@@ -274,11 +274,11 @@
                      nil];
 	y.labelExclusionRanges = exclusionRanges;
   
-	// Create a blue plot area
+	// Create the white plot area
 	CPScatterPlot *boundLinePlot = [[[CPScatterPlot alloc] init] autorelease];
   CPMutableLineStyle *lineStyle = [CPMutableLineStyle lineStyle];
-  lineStyle.miterLimit = 1.0f;
-	lineStyle.lineWidth = 3.0f;
+  //lineStyle.miterLimit = 1.0f;
+	lineStyle.lineWidth = 1.0f;
 	lineStyle.lineColor = [CPColor whiteColor];
   boundLinePlot.dataLineStyle = lineStyle;
   boundLinePlot.identifier = @"white Plot";
@@ -294,17 +294,27 @@
   boundLinePlot.areaFill = areaGradientFill;
   boundLinePlot.areaBaseValue = [[NSDecimalNumber zero] decimalValue];  
   
+  // Add Data
+  NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
+	NSUInteger i;
+	for ( i = 0; i < 60; i++ ) {
+		id x = [NSNumber numberWithFloat:1+i*0.05];
+		id y = [NSNumber numberWithFloat:1.2*rand()/(float)RAND_MAX + 1.2];
+		[contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
+	}
+	self.dataForPlot = contentArray;
+
+  
 }
 
 -(NSUInteger)numberOfRecordsForPlot:(CPPlot *)plot {
   return [dataForPlot count];
 }
 
-/*
+
 -(NSNumber *)numberForPlot:(CPPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index 
 {
-  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPScatterPlotFieldX ? @"x" : @"y")];
-	
+  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPScatterPlotFieldX ? @"x" : @"y")];	
   return num;
-}*/
+}
 @end
