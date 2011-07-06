@@ -1,0 +1,170 @@
+<!--?xml version="1.0" encoding="UTF-8" ?-->
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <title>Skynet Mobile</title>
+    <!-- base href="https://secure.proximus.be/secure-static/Customer/en/MSelfcare/MDU_View_Data.html" -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta http-equiv="Cache-Control" content="max-age=300">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+
+    <link href="http://static.m.skynet.be/images/favicon.gif" rel="icon" type="image/gif">
+    <link href="http://static.m.skynet.be/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+    <link href="110622_proxiResult_en_files/linksbox.css" rel="stylesheet" type="text/css">
+    <link href="110622_proxiResult_en_files/toolbox.css" rel="stylesheet" type="text/css">
+    <link href="110622_proxiResult_en_files/common.css" rel="stylesheet" type="text/css">
+    <link href="110622_proxiResult_en_files/article.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+<div id="wrapper" class="MyAccountTariffIndex"><a title="top" id="top"></a>
+
+    <div id="outsideBorderBottom">
+        <div id="header">
+            <h1><a href="http://m.skynet.be/"><img src="110622_proxiResult_en_files/logoSkynet.jpg" alt="Skynet Logo" width="59" height="25"></a></h1>
+            <ul class="lang">
+                <li class="first"><a href="https://secure.proximus.be/selfcare/usage/view/usage/show?lan=fr" class="fr selected">FR</a></li>
+                <li><a href="https://secure.proximus.be/selfcare/usage/view/usage/show?lan=nl" class="nl">NL</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- end header -->
+
+    <div class="contentAd">
+        <div id="ad"></div>
+    </div>
+<!-- tabs -->
+<div id="tabs">
+    <ul class="navigation">
+        <li class="first">
+            <h2><a href="http://m.skynet.be/" accesskey="0">Home</a></h2>
+        </li>
+        <!--
+                <li class="current last">
+                        <h2><a href="#">My Account</a></h2>
+                </li>
+        -->
+    </ul>
+
+
+    <!-- BO // partner content starts here -->
+
+    <ul class="crumbTrail">
+        <li class="last"><a class="tariff" href="http://m.skynet.be/">Joachim Van der Hoeven</a></li>
+    </ul>
+</div>
+<!-- end tabs -->
+<div class="component">
+    <div class="boxRoundedBottom">
+
+
+        <div class="label">
+            <table width="90%" border="0" cellpadding="0" cellspacing="0">
+                <tbody><tr>
+                    <td>
+                        <h3>
+                            Data usage
+                        </h3>
+                    </td>
+                    <td align="right"><a class="articleBody" href="https://secure.proximus.be/LOG/logoff?fromurl=http://m.skynet.be/">
+                        Log out
+                    </a></td>
+                </tr>
+            </tbody></table>
+        </div>
+
+				<div class="articleLead bottomLine">
+					<h3>
+						National
+					</h3>
+
+					<div class="articleBody">
+						<p>
+							<span class="label">From </span><span class="date">10/06/2011 - 00:00</span><br>
+							<span class="label">Until </span><span class="date">21/06/2011 - 22:55</span>
+						</p>
+							<p>
+								At no extra charge
+							</p>
+
+							<p>
+								<strong>113.14 MB</strong><br>
+								which is
+								<strong>15.0%</strong>
+								of your
+								<strong>750 MB</strong>
+								bundle
+							</p>
+					</div>
+				</div>
+
+				<div class="articleLead bottomLine">
+					<h3>
+						Roaming
+					</h3>
+
+					<div class="articleBody">
+						<p>
+							<span class="label">No usage available</span><br>
+						</p>
+					</div>
+				</div>
+
+
+
+
+        <div class="bottomContent">
+            <div class="innerBoxRounded l_innerBox">
+                <ul class="subMenu">
+                    <li class="local">
+                        <a href="https://secure.proximus.be/secure-static/Customer/en/MSelfcare/MDU_Help.html">
+                            Help - FAQ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bottomContent">
+            <div class="innerBoxRounded l_innerBox">
+                <ul class="subMenu">
+                    <li class="local">
+                        <a href="https://secure.proximus.be/secure-static/Customer/en/MSelfcare/MDU_Disclaimer.html">
+                            Legal disclaimer
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- EO // partner content ends here -->
+
+    </div>
+</div>
+
+    <!-- partnerlink -->
+    <div id="partnerLink">
+        <p class="first"></p>
+
+        <p class="last"></p>
+    </div>
+    <!-- end partnerlink -->
+    <!-- footer -->
+    <div id="footer">
+        <ul class="destinations">
+            <li class="home"><span> <a accesskey="4" href="http://m.skynet.be/">Home</a> </span></li>
+            <li class="sitemap"><span> <a accesskey="5" href="http://m.skynet.be/sitemap">Sitemap</a> </span></li>
+        </ul>
+        <ul class="options">
+            <li class="top"><span> <a accesskey="2" title="top" href="#top">Top</a> </span></li>
+            <li class="mpHome"><span> <a accesskey="3" title="Skynet website" href="http://www.skynet.be/">Skynet.be</a> </span></li>
+        </ul>
+    </div>
+    <!-- end footer -->
+</div>
+
+
+</body></html>=

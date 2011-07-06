@@ -32,20 +32,26 @@
 		[[self delegate] proximusDidAddData];
     DLog(@"setCredentials stopped : refresh in less then an hour") ;
   }else{
-	NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/LOG/login"];
-	ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-	[request setDelegate:self];
-	[request setPostValue:mobileNumber forKey:@"msisdn"];
-	[request setPostValue:password forKey:@"password"];
-	[request setPostValue:@"http://m.skynet.be/my-account/login?new_lang=nl" forKey:@"referrerurl"];
-	[request setPostValue:@"mobile" forKey:@"laf"];
-	[request setPostValue:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl" forKey:@"fromurl"];
-	[request setPostValue:@"nl" forKey:@"lan"];
-	[request setPostValue:@"login" forKey:@"login"];
-	[request setPostValue:@"Submit !" forKey:@"submit"];
-	[request setDidFinishSelector:@selector(loginDone:)];
-	[request setDidFailSelector:@selector(loginError:)];
-	[request startAsynchronous];
+    
+  NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/LOG/login"];
+  ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+  [request setDelegate:self];
+  [request setPostValue:mobileNumber forKey:@"msisdn"];
+  [request setPostValue:password forKey:@"password"];
+  [request setPostValue:@"https://m.skynet.be/my-account/login?new_lang=nl" forKey:@"referrerurl"];
+  [request setPostValue:@"mobile" forKey:@"laf"];
+  //[request setPostValue:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl" forKey:@"fromurl"];
+  [request setPostValue:@"" forKey:@"fromurl"];
+  [request setPostValue:@"nl" forKey:@"lan"];
+  [request setPostValue:@"nl" forKey:@"new_lang"];
+  [request setPostValue:@"cssdatausage" forKey:@"functionid"];
+  [request setPostValue:@"prod" forKey:@"_proximousEnv"];
+  [request setPostValue:@"login" forKey:@"login"];
+  [request setPostValue:@"Submit !" forKey:@"submit"];
+  [request setUseSessionPersistence:YES];  
+  [request setDidFinishSelector:@selector(loginDone:)];
+  [request setDidFailSelector:@selector(loginError:)];
+  [request startAsynchronous];
   }
 	DLog(@"setCredentials end") ;
 }
@@ -55,10 +61,11 @@
 	// 2010
   //NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=en"];
   // 2011
-  NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?lan=nl"];
+  NSURL *url = [NSURL URLWithString:@"https://secure.proximus.be/selfcare/usage/view/usage/show?&lan=nl&new_lang=nl"];
   
 	ASIFormDataRequest *request = [ASIHTTPRequest requestWithURL:url];
 	[request setDelegate:self];
+  //[request timeOutSeconds:10]; 
 	[request setDidFinishSelector:@selector(getDataDone:)];
 	[request setDidFailSelector:@selector(getDataError:)];
 	[request startAsynchronous];
@@ -161,11 +168,11 @@
 		//[elements release],elements = nil;
 		elements = [xpathParser search:@"//div[@class='articleBody']//p//span[@class='date']"];
 		
-		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
+		//NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init]; 
 		// 2010 format
     //[dateFormat setDateFormat:@"dd/MM/yyyy - HH:mm"];
 		// 2011 format              ma, jan 10, '11 - 00:00 after parsing => jan 10, 11 - 00:00
-    [dateFormat setDateFormat:@"MMM dd, yy - HH:mm"];
+    //[dateFormat setDateFormat:@"MMM dd, yy - HH:mm"];
     
     //NSString *t;
 		counter = 1;
@@ -192,7 +199,7 @@
 		
 		ZAssert([managedObjectContext save:&error], @"Error %@\n%@", [error localizedDescription], [error userInfo]);
     
-		[dateFormat release];
+		//[dateFormat release];
     [error	release];
 		
 	} else {
@@ -212,19 +219,44 @@
 
 - (NSString*)formatBelgianDate:(NSString*)proximusDate
 {
-  // current input : za, mrt 5, '11 - 19:19
-  //                 do, feb 10, '11 - 00:00
-  // desired output : 5 mrt '11 - 19:19
   
-  NSString *theMonth;
-  NSString *theDay;
-  NSString *theRest;
+  NSRange textRange;
   
-  theMonth = [proximusDate substringWithRange:NSMakeRange(4,3)];
-  theDay = [[proximusDate substringWithRange:NSMakeRange(8,2)] stringByReplacingOccurrencesOfString:@"," withString:@""] ;
-  theRest = [[proximusDate substringFromIndex:11] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  textRange =[proximusDate rangeOfString:@"/"];
+  if(textRange.location != NSNotFound){
+      
+    // new format since 22 june 2011
+    //current input : 10/06/2011 - 00:00
+    //                21/06/2011 - 22:55
+    // desired output : 21 jun '11 - 22:55
+    
+    NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init]; 
+    NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
+    [inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
+		[outputFormatter setDateFormat:@"d MMM ''YY - HH:mm"];
+        
+    return [outputFormatter stringFromDate:[inputFormatter dateFromString:proximusDate]];
+    
+    [inputFormatter release];
+    [outputFormatter release];
+  }else{
+    
+    // current input : za, mrt 5, '11 - 19:19
+    //                 do, feb 10, '11 - 00:00
+    // desired output : 5 mrt '11 - 19:19
+    
+    NSString *theMonth;
+    NSString *theDay;
+    NSString *theRest;
+    
+    theMonth = [proximusDate substringWithRange:NSMakeRange(4,3)];
+    theDay = [[proximusDate substringWithRange:NSMakeRange(8,2)] stringByReplacingOccurrencesOfString:@"," withString:@""] ;
+    theRest = [[proximusDate substringFromIndex:11] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    return [NSString stringWithFormat:@"%@ %@ %@",theDay,theMonth,theRest,nil];
+  }
   
-  return [NSString stringWithFormat:@"%@ %@ %@",theDay,theMonth,theRest,nil];
+  //[textRange release];
 }
 
 @end

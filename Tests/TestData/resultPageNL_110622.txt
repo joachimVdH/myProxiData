@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Skynet Mobile</title>
+    <base href="https://secure.proximus.be/secure-static/Customer/nl/MSelfcare/MDU_View_Data.html"/>
+
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <meta http-equiv="Cache-Control" content="max-age=300"/>
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+
+    <link href="http://static.m.skynet.be/images/favicon.gif" rel="icon" type="image/gif"/>
+    <link href="http://static.m.skynet.be/images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+    <link href="../../special/MOB_Data_Usage/img/linksbox.css" rel="stylesheet" type="text/css"/>
+    <link href="../../special/MOB_Data_Usage/img/toolbox.css" rel="stylesheet" type="text/css"/>
+    <link href="../../special/MOB_Data_Usage/img/common.css" rel="stylesheet" type="text/css"/>
+    <link href="../../special/MOB_Data_Usage/img/article.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+<div id="wrapper" class="MyAccountTariffIndex"><a title="top" id="top"></a>
+
+    <div id="outsideBorderBottom">
+        <div id="header">
+            <h1><a href="http://m.skynet.be/"><img src="../../special/MOB_Data_Usage/img/logoSkynet.jpg" alt="Skynet Logo" width="59" height="25"/></a></h1>
+            <ul class="lang">
+                <li class="first"><a href="https://secure.proximus.be/selfcare/usage/view/usage/show?lan=fr" class="fr selected">FR</a></li>
+                <li><a href="https://secure.proximus.be/selfcare/usage/view/usage/show?lan=nl" class="nl">NL</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- end header -->
+
+    <div class="contentAd">
+        <div id="ad"></div>
+    </div>
+<!-- tabs -->
+<div id="tabs">
+    <ul class="navigation">
+        <li class="first">
+            <h2><a href="http://m.skynet.be/" accesskey="0">Home</a></h2>
+        </li>
+        <!--
+                <li class="current last">
+                        <h2><a href="#">My Account</a></h2>
+                </li>
+        -->
+    </ul>
+
+
+    <!-- BO // partner content starts here -->
+
+    <ul class="crumbTrail">
+        <li class="last"><a class="tariff" href="http://m.skynet.be">Joachim Van der Hoeven</a></li>
+    </ul>
+</div>
+<!-- end tabs -->
+<div class="component">
+    <div class="boxRoundedBottom">
+
+
+        <div class="label">
+            <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                <tr>
+                    <td>
+                        <h3>
+                            Dataverbruik:
+                        </h3>
+                    </td>
+                    <td align="right"><a class="articleBody" href="https://secure.proximus.be/LOG/logoff?fromurl=http://m.skynet.be/">
+                        Uitloggen
+                    </a></td>
+                </tr>
+            </table>
+        </div>
+
+				<div class="articleLead bottomLine">
+					<h3>
+						Nationaal
+					</h3>
+
+					<div class="articleBody">
+						<p>
+							<span class="label">Vanaf </span><span class="date">10/06/2011 - 00:00</span><br/>
+							<span class="label">Tot </span><span class="date">21/06/2011 - 22:55</span>
+						</p>
+							<p>
+								Geen extra kosten
+							</p>
+
+							<p>
+								<strong>113.14 MB</strong><br/>
+								wat overeenkomt met
+								<strong>15.0%</strong>
+								van uw
+								<strong>750 MB</strong>
+								bundel
+							</p>
+					</div>
+				</div>
+
+				<div class="articleLead bottomLine">
+					<h3>
+						Roaming
+					</h3>
+
+					<div class="articleBody">
+						<p>
+							<span class="label">Geen verbruik beschikbaar</span><br/>
+						</p>
+					</div>
+				</div>
+
+
+
+
+        <div class="bottomContent">
+            <div class="innerBoxRounded l_innerBox">
+                <ul class="subMenu">
+                    <li class="local">
+                        <a href="MDU_Help.html">
+                            Help - FAQ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bottomContent">
+            <div class="innerBoxRounded l_innerBox">
+                <ul class="subMenu">
+                    <li class="local">
+                        <a href="MDU_Disclaimer.html">
+                            Disclaimer
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- EO // partner content ends here -->
+
+    </div>
+</div>
+
+    <!-- partnerlink -->
+    <div id="partnerLink">
+        <p class="first"></p>
+
+        <p class="last"></p>
+    </div>
+    <!-- end partnerlink -->
+    <!-- footer -->
+    <div id="footer">
+        <ul class="destinations">
+            <li class="home"><span> <a accesskey="4" href="http://m.skynet.be/">Home</a> </span></li>
+            <li class="sitemap"><span> <a accesskey="5" href="http://m.skynet.be/sitemap">Sitemap</a> </span></li>
+        </ul>
+        <ul class="options">
+            <li class="top"><span> <a accesskey="2" title="top" href="#top">Top</a> </span></li>
+            <li class="mpHome"><span> <a accesskey="3" title="Skynet website" href="http://www.skynet.be">Skynet.be</a> </span></li>
+        </ul>
+    </div>
+    <!-- end footer -->
+</div>
+</body>
+</html>
+=
