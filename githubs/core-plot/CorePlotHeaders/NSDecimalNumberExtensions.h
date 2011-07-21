@@ -1,11 +1,9 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
-/**	@category NSDecimalNumber(CPExtensions)
+/**	@category NSDecimalNumber(CPTExtensions)
  *	@brief Core Plot extensions to NSDecimalNumber.
  **/
-@interface NSDecimalNumber(CPExtensions)
-
--(CGFloat)floatValue;
+@interface NSDecimalNumber(CPTExtensions)
 
 @end

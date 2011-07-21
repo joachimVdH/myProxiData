@@ -229,8 +229,8 @@
 #pragma mark Plot Data Methods
 
 -(void)createGraph{
-  graph = [[CPXYGraph alloc] initWithFrame:CGRectZero];
-	CPClearTheme *theme = [[CPClearTheme alloc]init];
+  graph = [[CPTXYGraph alloc] initWithFrame:CGRectZero];
+	CPTClearTheme *theme = [[CPTClearTheme alloc]init];
   [graph applyTheme:theme];
   [theme release];
   
@@ -245,41 +245,41 @@
 	graph.paddingBottom = 0.0;
   
   // Setup plot space
-  CPXYPlotSpace *plotSpace = (CPXYPlotSpace *)graph.defaultPlotSpace;
+  CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
   plotSpace.allowsUserInteraction = YES;
-  plotSpace.xRange = [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.0) length:CPDecimalFromFloat(2.0)];
-  plotSpace.yRange = [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.0) length:CPDecimalFromFloat(3.0)];
+  plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.0) length:CPTDecimalFromFloat(2.0)];
+  plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.0) length:CPTDecimalFromFloat(3.0)];
   
   // Axes
-	CPXYAxisSet *axisSet = (CPXYAxisSet *)graph.axisSet;
-  CPXYAxis *x = axisSet.xAxis;
-  x.majorIntervalLength = CPDecimalFromString(@"0.5");
-  x.orthogonalCoordinateDecimal = CPDecimalFromString(@"2");
+	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
+  CPTXYAxis *x = axisSet.xAxis;
+  x.majorIntervalLength = CPTDecimalFromString(@"0.5");
+  x.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
   x.minorTicksPerInterval = 2;
  	NSArray *exclusionRanges = [NSArray arrayWithObjects:
-                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.99) length:CPDecimalFromFloat(0.02)], 
-                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(0.99) length:CPDecimalFromFloat(0.02)],
-                              [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(2.99) length:CPDecimalFromFloat(0.02)],
+                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
+                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
+                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(2.99) length:CPTDecimalFromFloat(0.02)],
                               nil];
 	x.labelExclusionRanges = exclusionRanges;
   
-  CPXYAxis *y = axisSet.yAxis;
-  y.majorIntervalLength = CPDecimalFromString(@"0.5");
+  CPTXYAxis *y = axisSet.yAxis;
+  y.majorIntervalLength = CPTDecimalFromString(@"0.5");
   y.minorTicksPerInterval = 5;
-  y.orthogonalCoordinateDecimal = CPDecimalFromString(@"2");
+  y.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
 	exclusionRanges = [NSArray arrayWithObjects:
-                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(1.99) length:CPDecimalFromFloat(0.02)], 
-                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(0.99) length:CPDecimalFromFloat(0.02)],
-                     [CPPlotRange plotRangeWithLocation:CPDecimalFromFloat(3.99) length:CPDecimalFromFloat(0.02)],
+                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
+                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
+                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(3.99) length:CPTDecimalFromFloat(0.02)],
                      nil];
 	y.labelExclusionRanges = exclusionRanges;
   
 	// Create the white plot area
-	CPScatterPlot *boundLinePlot = [[[CPScatterPlot alloc] init] autorelease];
-  CPMutableLineStyle *lineStyle = [CPMutableLineStyle lineStyle];
+	CPTScatterPlot *boundLinePlot = [[[CPTScatterPlot alloc] init] autorelease];
+  CPTMutableLineStyle *lineStyle = [CPTMutableLineStyle lineStyle];
   //lineStyle.miterLimit = 1.0f;
 	lineStyle.lineWidth = 1.0f;
-	lineStyle.lineColor = [CPColor whiteColor];
+	lineStyle.lineColor = [CPTColor whiteColor];
   boundLinePlot.dataLineStyle = lineStyle;
   boundLinePlot.identifier = @"white Plot";
   boundLinePlot.dataSource = self;
@@ -287,10 +287,10 @@
 	
 	// Do a white gradient
   
-	CPColor *areaColor1 = [CPColor colorWithComponentRed:1.0 green:1.0 blue:1.0 alpha:0.8];
-  CPGradient *areaGradient1 = [CPGradient gradientWithBeginningColor:areaColor1 endingColor:[CPColor clearColor]];
+	CPTColor *areaColor1 = [CPTColor colorWithComponentRed:1.0 green:1.0 blue:1.0 alpha:0.8];
+  CPTGradient *areaGradient1 = [CPTGradient gradientWithBeginningColor:areaColor1 endingColor:[CPTColor clearColor]];
   areaGradient1.angle = -90.0f;
-  CPFill *areaGradientFill = [CPFill fillWithGradient:areaGradient1];
+  CPTFill *areaGradientFill = [CPTFill fillWithGradient:areaGradient1];
   boundLinePlot.areaFill = areaGradientFill;
   boundLinePlot.areaBaseValue = [[NSDecimalNumber zero] decimalValue];  
   
@@ -307,14 +307,14 @@
   
 }
 
--(NSUInteger)numberOfRecordsForPlot:(CPPlot *)plot {
+-(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
   return [dataForPlot count];
 }
 
 
--(NSNumber *)numberForPlot:(CPPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index 
+-(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index 
 {
-  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPScatterPlotFieldX ? @"x" : @"y")];	
+  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y")];	
   return num;
 }
 @end
