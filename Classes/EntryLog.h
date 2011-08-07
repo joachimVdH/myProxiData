@@ -6,4 +6,5 @@
 -(float)percentage;
 -(id)parseDateString;
 -(int)getMonthByString:(NSString*)monthString;
+-(NSDate*)xDate;
 @end

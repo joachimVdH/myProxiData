@@ -230,15 +230,15 @@
     //                21/06/2011 - 22:55
     // desired output : 21 jun '11 - 22:55
     
-    NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init]; 
-    NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *inputFormatter = [[[NSDateFormatter alloc] init] autorelease]; 
+    NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
     [inputFormatter setDateFormat:@"dd/MM/yyyy - HH:mm"];
 		[outputFormatter setDateFormat:@"d MMM ''YY - HH:mm"];
         
     return [outputFormatter stringFromDate:[inputFormatter dateFromString:proximusDate]];
     
-    [inputFormatter release];
-    [outputFormatter release];
+    //[inputFormatter release];
+    //[outputFormatter release];
   }else{
     
     // current input : za, mrt 5, '11 - 19:19

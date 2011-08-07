@@ -247,32 +247,32 @@
   // Setup plot space
   CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph.defaultPlotSpace;
   plotSpace.allowsUserInteraction = YES;
-  plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.0) length:CPTDecimalFromFloat(2.0)];
-  plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.0) length:CPTDecimalFromFloat(3.0)];
+  plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(10100.0) length:CPTDecimalFromFloat(081500.0)];
+  plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.0) length:CPTDecimalFromFloat(750.0)];
   
   // Axes
 	CPTXYAxisSet *axisSet = (CPTXYAxisSet *)graph.axisSet;
   CPTXYAxis *x = axisSet.xAxis;
-  x.majorIntervalLength = CPTDecimalFromString(@"0.5");
-  x.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
-  x.minorTicksPerInterval = 2;
- 	NSArray *exclusionRanges = [NSArray arrayWithObjects:
-                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
-                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
-                              [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(2.99) length:CPTDecimalFromFloat(0.02)],
-                              nil];
-	x.labelExclusionRanges = exclusionRanges;
+  x.majorIntervalLength = CPTDecimalFromString(@"7");
+  //x.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
+  //x.minorTicksPerInterval = 7;
+ 	//NSArray *exclusionRanges = [NSArray arrayWithObjects:
+  //                            [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
+  //                            [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
+  //                            [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(2.99) length:CPTDecimalFromFloat(0.02)],
+  //                            nil];
+	//x.labelExclusionRanges = exclusionRanges;
   
   CPTXYAxis *y = axisSet.yAxis;
-  y.majorIntervalLength = CPTDecimalFromString(@"0.5");
-  y.minorTicksPerInterval = 5;
-  y.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
-	exclusionRanges = [NSArray arrayWithObjects:
-                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
-                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
-                     [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(3.99) length:CPTDecimalFromFloat(0.02)],
-                     nil];
-	y.labelExclusionRanges = exclusionRanges;
+  y.majorIntervalLength = CPTDecimalFromString(@"50");
+  //y.minorTicksPerInterval = 5;
+  //y.orthogonalCoordinateDecimal = CPTDecimalFromString(@"2");
+	//exclusionRanges = [NSArray arrayWithObjects:
+  //                   [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(1.99) length:CPTDecimalFromFloat(0.02)], 
+  //                   [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.99) length:CPTDecimalFromFloat(0.02)],
+  //                   [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(3.99) length:CPTDecimalFromFloat(0.02)],
+  //                   nil];
+	//y.labelExclusionRanges = exclusionRanges;
   
 	// Create the white plot area
 	CPTScatterPlot *boundLinePlot = [[[CPTScatterPlot alloc] init] autorelease];
@@ -295,17 +295,43 @@
   boundLinePlot.areaBaseValue = [[NSDecimalNumber zero] decimalValue];  
   
   // Add Data
-  NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
-	NSUInteger i;
-	for ( i = 0; i < 60; i++ ) {
-		id x = [NSNumber numberWithFloat:1+i*0.05];
-		id y = [NSNumber numberWithFloat:1.2*rand()/(float)RAND_MAX + 1.2];
-		[contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
-	}
-	self.dataForPlot = contentArray;
+  //NSMutableArray *contentArray = [NSMutableArray arrayWithCapacity:100];
+  //NSUInteger i;
+	//for ( i = 0; i < 60; i++ ) {
+	//	id x = [NSNumber numberWithFloat:1+i*0.05];
+	//	id y = [NSNumber numberWithFloat:1.2*rand()/(float)RAND_MAX + 1.2];
+	//	[contentArray addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:x, @"x", y, @"y", nil]];
+	//}
+	//self.dataForPlot = contentArray;
 
-  
+  [self setPlotData];
 }
+
+
+- (void)setPlotData{
+  NSError *error = NULL;
+  
+  NSFetchRequest *request = [[NSFetchRequest alloc] init];
+  [request setEntity:[NSEntityDescription entityForName:@"EntryLog" inManagedObjectContext:managedObjectContext]];
+  [request setFetchLimit:100];
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
+  NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+  [request setSortDescriptors:sortDescriptors];
+	[sortDescriptor release];
+	[sortDescriptors release];
+	
+  self.dataForPlot = [[managedObjectContext executeFetchRequest:request error:&error] copy];
+	
+  //DLog(@"entryLog : %@",entryLog);
+	ZAssert(error == nil, @"Error accessing context: %@", [error localizedDescription]);
+  
+  // do not release request - crash is on your side
+	//[request release];
+  
+	[error	release];
+}
+
 
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
   return [dataForPlot count];
@@ -314,7 +340,34 @@
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index 
 {
-  NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPTScatterPlotFieldX ? @"x" : @"y")];	
+  NSNumber *num;
+  EntryLog *entrylog;
+  
+  if (fieldEnum == CPTScatterPlotFieldX)
+  {
+    entrylog = [dataForPlot objectAtIndex:index] ;
+
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dayComponents = [gregorian components:(NSDayCalendarUnit | NSMonthCalendarUnit | NSHourCalendarUnit) fromDate:[entrylog xDate]];
+   
+    num = [NSNumber numberWithLong:[dayComponents month] * 10000 + [dayComponents day] * 100 + [dayComponents hour]+index]  ;
+    
+    [gregorian release];
+    //[dayComponents release];
+  }
+  else
+  {    
+    entrylog = [dataForPlot objectAtIndex:index] ;
+    num = [NSNumber numberWithFloat:[entrylog toUse]] ;
+  }
+  //NSNumber *num = [[dataForPlot objectAtIndex:index] valueForKey:(fieldEnum == CPTScatterPlotFieldX ? @"xDate" : @"toUse")];	
   return num;
 }
+
+
+
+
+
+
+
 @end

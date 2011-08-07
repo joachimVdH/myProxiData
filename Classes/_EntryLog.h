@@ -11,9 +11,6 @@
 
 
 
-
-
-
 @interface EntryLogID : NSManagedObjectID {}
 @end
 
@@ -25,7 +22,33 @@
 
 
 
+
+@property (nonatomic, retain) NSDate *createdAt;
+
+
+//- (BOOL)validateCreatedAt:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, retain) NSDate *periodFrom;
+
+
+//- (BOOL)validatePeriodFrom:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, retain) NSDate *periodTo;
+
+
+//- (BOOL)validatePeriodTo:(id*)value_ error:(NSError**)error_;
+
+
+
+
 @property (nonatomic, retain) NSNumber *used;
+
 
 @property float usedValue;
 - (float)usedValue;
@@ -35,49 +58,15 @@
 
 
 
-@property (nonatomic, retain) NSDate *periodTo;
-
-//- (BOOL)validatePeriodTo:(id*)value_ error:(NSError**)error_;
-
-
 
 @property (nonatomic, retain) NSNumber *volume;
+
 
 @property float volumeValue;
 - (float)volumeValue;
 - (void)setVolumeValue:(float)value_;
 
 //- (BOOL)validateVolume:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSDate *periodFrom;
-
-//- (BOOL)validatePeriodFrom:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSString *periodFromText;
-
-//- (BOOL)validatePeriodFromText:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSDate *lastRefresh;
-
-//- (BOOL)validateLastRefresh:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSString *periodToText;
-
-//- (BOOL)validatePeriodToText:(id*)value_ error:(NSError**)error_;
-
-
-
-@property (nonatomic, retain) NSDate *createdAt;
-
-//- (BOOL)validateCreatedAt:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -91,6 +80,25 @@
 
 @interface _EntryLog (CoreDataGeneratedPrimitiveAccessors)
 
+
+- (NSDate*)primitiveCreatedAt;
+- (void)setPrimitiveCreatedAt:(NSDate*)value;
+
+
+
+
+- (NSDate*)primitivePeriodFrom;
+- (void)setPrimitivePeriodFrom:(NSDate*)value;
+
+
+
+
+- (NSDate*)primitivePeriodTo;
+- (void)setPrimitivePeriodTo:(NSDate*)value;
+
+
+
+
 - (NSNumber*)primitiveUsed;
 - (void)setPrimitiveUsed:(NSNumber*)value;
 
@@ -98,8 +106,6 @@
 - (void)setPrimitiveUsedValue:(float)value_;
 
 
-- (NSDate*)primitivePeriodTo;
-- (void)setPrimitivePeriodTo:(NSDate*)value;
 
 
 - (NSNumber*)primitiveVolume;
@@ -108,25 +114,6 @@
 - (float)primitiveVolumeValue;
 - (void)setPrimitiveVolumeValue:(float)value_;
 
-
-- (NSDate*)primitivePeriodFrom;
-- (void)setPrimitivePeriodFrom:(NSDate*)value;
-
-
-- (NSString*)primitivePeriodFromText;
-- (void)setPrimitivePeriodFromText:(NSString*)value;
-
-
-- (NSDate*)primitiveLastRefresh;
-- (void)setPrimitiveLastRefresh:(NSDate*)value;
-
-
-- (NSString*)primitivePeriodToText;
-- (void)setPrimitivePeriodToText:(NSString*)value;
-
-
-- (NSDate*)primitiveCreatedAt;
-- (void)setPrimitiveCreatedAt:(NSDate*)value;
 
 
 

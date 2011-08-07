@@ -26,6 +26,42 @@
 	return (EntryLogID*)[super objectID];
 }
 
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+	
+	if ([key isEqualToString:@"usedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"used"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+	if ([key isEqualToString:@"volumeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"volume"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+	}
+
+	return keyPaths;
+}
+
+
+
+
+@dynamic createdAt;
+
+
+
+
+
+
+@dynamic periodFrom;
+
+
+
+
+
+
+@dynamic periodTo;
+
+
+
 
 
 
@@ -55,13 +91,6 @@
 
 
 
-@dynamic periodTo;
-
-
-
-
-
-
 @dynamic volume;
 
 
@@ -83,41 +112,6 @@
 - (void)setPrimitiveVolumeValue:(float)value_ {
 	[self setPrimitiveVolume:[NSNumber numberWithFloat:value_]];
 }
-
-
-
-
-
-@dynamic periodFrom;
-
-
-
-
-
-
-@dynamic periodFromText;
-
-
-
-
-
-
-@dynamic lastRefresh;
-
-
-
-
-
-
-@dynamic periodToText;
-
-
-
-
-
-
-@dynamic createdAt;
-
 
 
 

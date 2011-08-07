@@ -49,5 +49,6 @@
 - (void)flipSide;
 - (void)setCurrentEntryLog;
 - (void)createGraph;
+- (void)setPlotData;
 
 @end
